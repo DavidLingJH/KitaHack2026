@@ -1,5 +1,6 @@
 import 'dart:ui'; // Required for the glass effect
 import 'package:flutter/material.dart';
+import 'package:kitahack_frontend/camera.dart';
 import 'package:kitahack_frontend/chatbot.dart';
 
 // Import your actual pages here
@@ -84,7 +85,7 @@ class HomePage extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               // REPLACE 'PlaceholderScreen' with your Camera Widget
-                              builder: (context) => const PlaceholderScreen(title: "Camera"),
+                              builder: (context) => const CameraCaptureScreen(),
                             ),
                           );
                         },
@@ -101,9 +102,6 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// -----------------------------------------------------------
-// CUSTOM WIDGET: The Glass Menu Card
-// -----------------------------------------------------------
 class MenuCard extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -205,22 +203,6 @@ class MenuCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-// -----------------------------------------------------------
-// HELPER: Placeholder Screen (Delete this when you link real pages)
-// -----------------------------------------------------------
-class PlaceholderScreen extends StatelessWidget {
-  final String title;
-  const PlaceholderScreen({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(child: Text("$title Screen Under Construction")),
     );
   }
 }
