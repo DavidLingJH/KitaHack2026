@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kitahack_frontend/chatbot.dart';
+import 'package:kitahack_frontend/homepage.dart';
 
 // 1. You must have a main function to start the app
 void main() {
@@ -15,7 +15,7 @@ class Main extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Chatbot App',
-      home: const Chatbot(),
+      home: const HomePage(),
     );
   }
 }
