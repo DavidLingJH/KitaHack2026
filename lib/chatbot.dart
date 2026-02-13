@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kitahack_frontend/GlassButton.dart';
-
+import 'package:kitahack_frontend/RecipeGenerator.dart';
+import 'package:kitahack_frontend/MealPlanGenerator.dart';
 class Chatbot extends StatelessWidget {
   const Chatbot({super.key});
 
@@ -63,12 +64,22 @@ class Chatbot extends StatelessWidget {
                       const SizedBox(height: 20), // Spacing between text and buttons
                       GlassButton(
                         text: "Generate a Recipe",
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => RecipeGenerator()),
+                          );
+                        },
                       ),
                       const SizedBox(height: 10), 
                       GlassButton(
                         text: "Generate Meal Plan",
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MealPlanGenerator()),
+                          );
+                        },
                       ),
                       const SizedBox(height: 10), 
                       GlassButton(

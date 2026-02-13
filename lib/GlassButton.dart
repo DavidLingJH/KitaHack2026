@@ -1,43 +1,41 @@
 import 'dart:ui';
-import 'package:flutter/material.dart'; // REQUIRED: Import this for the ImageFilter class
+import 'package:flutter/material.dart';
 
 class GlassButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
+  final Color color; // New Property
 
   const GlassButton({
     super.key,
     required this.text,
     required this.onPressed,
+    this.color = Colors.white, // Default to White if not specified
   });
 
   @override
   Widget build(BuildContext context) {
-    // 1. ClipRRect constrains the blur to just the button shape
     return ClipRRect(
-      borderRadius: BorderRadius.circular(25), // Rounded corners
+      borderRadius: BorderRadius.circular(25),
       child: BackdropFilter(
-        // 2. The Blur Effect
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), 
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          height: 55,             // Fixed height for consistency
+          height: 55,
           decoration: BoxDecoration(
-            // 3. The "Liquid" Gradient (Shiny look)
+            // Use the passed 'color' variable here
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withValues(alpha: 0.4), // Lighter at top-left
-                Colors.white.withValues(alpha: 0.1), // Darker at bottom-right
+                color.withValues(alpha: 0.4), // Use color here
+                color.withValues(alpha: 0.1), // And here
               ],
             ),
             borderRadius: BorderRadius.circular(25),
-            // 4. The Frosty Border
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.5), 
+              color: Colors.white.withValues(alpha: 0.5), // And here
               width: 1.5,
             ),
-            // Optional: Subtle shadow for depth
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.05),
@@ -46,16 +44,18 @@ class GlassButton extends StatelessWidget {
               ),
             ],
           ),
-          // 5. Material & InkWell give the "Splash" tap effect
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               onTap: onPressed,
+              splashColor: color.withValues(alpha: 0.3), // Matches splash to button color
               child: Center(
                 child: Text(
                   text,
-                  style: const TextStyle(
-                    color: Colors.black87, // Dark text for contrast
+                  style: TextStyle(
+                    // If the button is white, use black text.
+                    // If the button is colored (like Green), use dark green text or white.
+                    color: color == Colors.white ? Colors.black87 : Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
