@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kitahack_frontend/GlassButton.dart';
+import 'package:kitahack_frontend/homepage.dart';
 
 class CameraCaptureScreen extends StatelessWidget {
   const CameraCaptureScreen({super.key});
@@ -43,7 +45,6 @@ class CameraCaptureScreen extends StatelessWidget {
               ),
             ),
           ),
-          // This widget takes up 70% of the vertical space
           Positioned(
             top: 100,
             left: 0,
@@ -73,6 +74,50 @@ class CameraCaptureScreen extends StatelessWidget {
               ),
             ),
           ),
+          Positioned(
+            // Math: Start 100px down + height of frame (60%) + 20px gap
+            top: 35 + (screenHeight * 0.6), 
+            left: 120, 
+            right: 120,
+            //ADD A COLUMN HERE
+            child: Column(
+              children: [
+                Center(
+                  child: GlassButton( // Replace with your actual widget class name
+                    text: "Receipt",
+                    onPressed: () {
+                      // Handle tap
+                    },
+                  ),
+                ),
+                SizedBox(height: 60),
+                GestureDetector(
+                  onTap: () {
+                    // Navigate to the new page here
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()), // Replace NextPage with your actual screen
+                    );
+                  },
+                  child: Image.asset(
+                    'assets/images/camera shutter (1).png',
+                    height: 200,
+                    fit: BoxFit.fitHeight,
+                  ),
+                ),
+              ],
+            )
+          ),
+          Positioned(
+            bottom: 10,
+            left: 10,
+            width: 120,
+            child: GlassButton(
+              text: 'Capture a\nMeal', 
+              onPressed: () {  },
+              color: Colors.black,
+            )
+          )
         ],
       ),
     );

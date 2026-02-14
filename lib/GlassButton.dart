@@ -52,6 +52,7 @@ class GlassButton extends StatelessWidget {
               child: Center(
                 child: Text(
                   text,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     // If the button is white, use black text.
                     // If the button is colored (like Green), use dark green text or white.
