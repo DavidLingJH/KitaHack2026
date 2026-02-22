@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kitahack_frontend/GlassButton.dart';
+import 'package:kitahack_frontend/GlassDropdownField.dart';
 import 'package:kitahack_frontend/InputTextField.dart';
 
 class MealPlanGenerator extends StatefulWidget {
@@ -10,88 +11,81 @@ class MealPlanGenerator extends StatefulWidget {
 }
 
 class _MealPlanGeneratorState extends State<MealPlanGenerator> {
-  // --- 1. EXISTING CONTROLLERS ---
+  // --- 1. CORE TEXT INPUTS ---
   final TextEditingController ingredients = TextEditingController();
-  final TextEditingController exclusions = TextEditingController();
-  final TextEditingController style = TextEditingController();
+  final TextEditingController budget = TextEditingController();
+  final TextEditingController cookTime = TextEditingController(text: "45"); // Default 45 mins
+  
+  // --- 2. ADVANCED TEXT INPUTS ---
+  final TextEditingController style = TextEditingController(); 
+  final TextEditingController appliances = TextEditingController(); 
+  final TextEditingController exclusions = TextEditingController(); 
+  final TextEditingController healthCon = TextEditingController(); 
 
-  // --- 2. NEW CONTROLLERS (Based on your JSON Schema) ---
-  final TextEditingController mealType =
-      TextEditingController(); // e.g. Lunch, Dinner
-  final TextEditingController dietRes =
-      TextEditingController(); // e.g. Vegan, Keto
-  final TextEditingController duration =
-      TextEditingController(); // e.g. 3 (Days)
-  final TextEditingController mealPurpose =
-      TextEditingController(); // e.g. Weight Loss
-  final TextEditingController numPeople = TextEditingController(); // e.g. 2
-  final TextEditingController budget = TextEditingController(); // e.g. 50
-  final TextEditingController skillLevel =
-      TextEditingController(); // e.g. Beginner
-  final TextEditingController cookTime =
-      TextEditingController(); // e.g. 30 (Mins)
-  final TextEditingController healthCon =
-      TextEditingController(); // e.g. Diabetes
-  final TextEditingController appliances =
-      TextEditingController(); // e.g. Oven, Air Fryer
+  // --- 3. DROPDOWN STATES (With Defaults) ---
+  int selectedDuration = 7; // Default to 1 week
+  int selectedPeople = 1;   // Default to 1 person
+  String selectedDietary = "None";
+  String selectedPurpose = "General Health";
+  String selectedSkill = "Beginner";
+  String selectedMealType = "All Meals"; 
 
-  // --- 3. BOOLEAN TOGGLES ---
+  // --- 4. TOGGLES ---
   bool isHalal = false;
-  bool preferVariety = true;
+  bool preferVariety = true; // Defaulted to true for meal plans
+
+  // --- 5. UI STATE ---
+  bool _showAdvanced = false;
 
   @override
   void dispose() {
-    // Dispose ALL controllers to free up memory
     ingredients.dispose();
-    exclusions.dispose();
-    style.dispose();
-    mealType.dispose();
-    dietRes.dispose();
-    duration.dispose();
-    mealPurpose.dispose();
-    numPeople.dispose();
     budget.dispose();
-    skillLevel.dispose();
     cookTime.dispose();
-    healthCon.dispose();
+    style.dispose();
     appliances.dispose();
+    exclusions.dispose();
+    healthCon.dispose();
     super.dispose();
   }
 
   void _generateRecipe() {
-    // Collect all data into a map or object here
-    // For now, we print the key fields to console
     print("--- NEW MEAL PLAN REQUEST ---");
     print("Ingredients: ${ingredients.text}");
-    print("Dietary Restrictions: ${dietRes.text}");
-    print("Halal: $isHalal");
-    print("People: ${numPeople.text}");
+    print("Duration: $selectedDuration days");
+    print("People: $selectedPeople");
+    print("Dietary: $selectedDietary");
+    print("Goal: $selectedPurpose");
     print("Budget: ${budget.text}");
+    print("Halal: $isHalal");
     print("Variety: $preferVariety");
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Generating plan for ${ingredients.text}...")),
+      const SnackBar(content: Text("Generating your meal plan...")),
     );
   }
 
   void _clearForm() {
+    // Reset TextFields
     ingredients.clear();
-    exclusions.clear();
-    style.clear();
-    mealType.clear();
-    dietRes.clear();
-    duration.clear();
-    mealPurpose.clear();
-    numPeople.clear();
     budget.clear();
-    skillLevel.clear();
-    cookTime.clear();
-    healthCon.clear();
+    cookTime.text = "45";
+    style.clear();
     appliances.clear();
+    exclusions.clear();
+    healthCon.clear();
 
+    // Reset Dropdowns & UI
     setState(() {
+      selectedDuration = 7;
+      selectedPeople = 1;
+      selectedDietary = "None";
+      selectedPurpose = "General Health";
+      selectedSkill = "Beginner";
+      selectedMealType = "All Meals";
       isHalal = false;
       preferVariety = true;
+      _showAdvanced = false;
     });
   }
 
@@ -110,173 +104,258 @@ class _MealPlanGeneratorState extends State<MealPlanGenerator> {
         centerTitle: true,
         leading: const BackButton(color: Colors.black),
       ),
-      // Move FAB to avoid blocking bottom fields
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: Container(
-        width: 140,
-        margin: const EdgeInsets.only(bottom: 20, right: 10),
+        width: 160,
+        margin: const EdgeInsets.only(bottom: 10, left: 10),
         child: GlassButton(
-          text: "Generate",
+          text: "Generate Plan",
           onPressed: _generateRecipe,
           color: Colors.lightGreen,
         ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(
-            20,
-            20,
-            20,
-            100,
-          ), // Extra bottom padding for FAB
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- SECTION: FOOD & INGREDIENTS ---
+              
+              // ==========================================
+              // THE BASICS (Always Visible)
+              // ==========================================
               const Text(
-                "Food & Ingredients",
+                "The Basics",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               const SizedBox(height: 15),
-              GlassTextField(label: "Ingredients", controller: ingredients),
-              const SizedBox(height: 10),
+              
               GlassTextField(
-                label: "Appliances Available",
-                controller: appliances,
+                label: "Base Ingredients", 
+                controller: ingredients,
+                hint: "Chicken, Rice, Broccoli...",
               ),
               const SizedBox(height: 10),
-              GlassTextField(label: "Exclusions", controller: exclusions),
-
-              const SizedBox(height: 25),
-
-              // --- SECTION: DIET & HEALTH ---
-              const Text(
-                "Diet & Health",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              const SizedBox(height: 15),
-              GlassTextField(
-                label: "Dietary Restrictions",
-                controller: dietRes,
+              
+              // Split Row for Days and People
+              Row(
+                children: [
+                  Expanded(
+                    child: GlassDropdownField<int>(
+                      label: "Days",
+                      labelWidth: 70, 
+                      value: selectedDuration,
+                      items: const [1, 2, 3, 5, 7, 14, 30],
+                      onChanged: (int? val) => setState(() => selectedDuration = val!),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: GlassDropdownField<int>(
+                      label: "People",
+                      labelWidth: 80,
+                      value: selectedPeople,
+                      items: const [1, 2, 3, 4, 5, 6, 8, 10],
+                      onChanged: (int? val) => setState(() => selectedPeople = val!),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 10),
-              GlassTextField(label: "Health Conditions", controller: healthCon),
-              const SizedBox(height: 10),
-              // Halal Toggle
-              SwitchListTile(
-                title: const Text(
-                  "Halal Only",
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
-                value: isHalal,
-                activeTrackColor: Colors.lightGreen,
-                // Optionally set the thumb (circle) color to white for better contrast
-                activeThumbColor: Colors.white,
-                onChanged: (bool value) {
-                  setState(() {
-                    isHalal = value;
-                  });
-                },
-              ),
 
-              const SizedBox(height: 25),
-
-              // --- SECTION: LOGISTICS (Numbers) ---
-              const Text(
-                "Logistics",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              const SizedBox(height: 15),
+              // Split Row for Budget and Cook Time
               Row(
                 children: [
                   Expanded(
                     child: GlassTextField(
-                      label: "People",
-                      controller: numPeople,
+                      label: "Budget",
+                      labelWidth: 80,
+                      controller: budget,
+                      hint: "e.g. 50",
                       keyboardType: TextInputType.number,
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: GlassTextField(
-                      label: "Budget",
-                      controller: budget,
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    child: GlassTextField(
-                      label: "Cook Time (mins)",
+                      label: "Max Mins",
+                      labelWidth: 90,
                       controller: cookTime,
                       keyboardType: TextInputType.number,
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: GlassTextField(
-                      label: "Duration (days)",
-                      controller: duration,
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
                 ],
+              ),
+              const SizedBox(height: 10),
+
+              GlassDropdownField<String>(
+                label: "Diet",
+                labelWidth: 80,
+                value: selectedDietary,
+                items: const ["None", "Vegetarian", "Vegan", "Keto", "Paleo", "Gluten-Free"],
+                onChanged: (String? val) => setState(() => selectedDietary = val!),
               ),
 
               const SizedBox(height: 25),
 
-              // --- SECTION: PREFERENCES ---
-              const Text(
-                "Preferences",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              const SizedBox(height: 15),
-              GlassTextField(
-                label: "Cuisine Style",
-                controller: style,
-              ), // e.g. Italian
-              const SizedBox(height: 10),
-              GlassTextField(
-                label: "Meal Type",
-                controller: mealType,
-              ), // e.g. Lunch
-              const SizedBox(height: 10),
-              GlassTextField(
-                label: "Meal Purpose",
-                controller: mealPurpose,
-              ), // e.g. Muscle Gain
-              const SizedBox(height: 10),
-              GlassTextField(label: "Skill Level", controller: skillLevel),
-
-              // Variety Toggle
-              SwitchListTile(
-                title: const Text(
-                  "Prioritize Variety",
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
-                value: preferVariety,
-                // Use activeTrackColor for the "fill" color when ON
-                activeTrackColor: Colors.lightGreen,
-                // Optionally set the thumb (circle) color to white for better contrast
-                activeThumbColor: Colors.white,
-                onChanged: (bool value) {
+              // ==========================================
+              // ADVANCED SETTINGS TOGGLE
+              // ==========================================
+              InkWell(
+                onTap: () {
                   setState(() {
-                    preferVariety = value;
+                    _showAdvanced = !_showAdvanced;
                   });
                 },
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _showAdvanced ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                        color: Colors.black87,
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        "Advanced Settings",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold, 
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              
+              const SizedBox(height: 10),
+
+              // ==========================================
+              // ADVANCED SETTINGS CONTENT
+              // ==========================================
+              AnimatedSize(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child: !_showAdvanced 
+                  ? const SizedBox.shrink() 
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        
+                        Row(
+                          children: [
+                            Expanded(
+                              child: GlassDropdownField<String>(
+                                label: "Goal",
+                                labelWidth: 70,
+                                value: selectedPurpose,
+                                items: const ["General Health", "Weight Loss", "Muscle Gain", "Maintenance"],
+                                onChanged: (String? val) => setState(() => selectedPurpose = val!),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: GlassDropdownField<String>(
+                                label: "Skill",
+                                labelWidth: 70,
+                                value: selectedSkill,
+                                items: const ["Beginner", "Intermediate", "Advanced"],
+                                onChanged: (String? val) => setState(() => selectedSkill = val!),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: GlassDropdownField<String>(
+                                label: "Meals",
+                                labelWidth: 80,
+                                value: selectedMealType,
+                                items: const ["All Meals", "Lunch & Dinner", "Dinner Only", "Breakfast Only", "Lunch Only"],
+                                onChanged: (String? val) => setState(() => selectedMealType = val!),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: GlassTextField(
+                                label: "Style",
+                                labelWidth: 70,
+                                controller: style,
+                                hint: "e.g. Asian",
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+
+                        GlassTextField(
+                          label: "Appliances",
+                          controller: appliances,
+                          hint: "Oven, Air Fryer...",
+                        ),
+                        const SizedBox(height: 10),
+                        
+                        GlassTextField(
+                          label: "Exclusions",
+                          controller: exclusions,
+                          hint: "No Peanuts, No Seafood...",
+                        ),
+                        const SizedBox(height: 10),
+
+                        GlassTextField(
+                          label: "Health Info",
+                          controller: healthCon,
+                          hint: "e.g. Diabetes, Hypertension...",
+                        ),
+                        const SizedBox(height: 15),
+
+                        // TOGGLES
+                        SwitchListTile(
+                          title: const Text(
+                            "Halal Only",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          value: isHalal,
+                          activeTrackColor: Colors.lightGreen,
+                          activeThumbColor: Colors.white,
+                          contentPadding: EdgeInsets.zero,
+                          onChanged: (bool value) => setState(() => isHalal = value),
+                        ),
+                        SwitchListTile(
+                          title: const Text(
+                            "Prioritize Variety",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          subtitle: const Text(
+                            "Don't repeat meals often",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          value: preferVariety,
+                          activeTrackColor: Colors.lightGreen,
+                          activeThumbColor: Colors.white,
+                          contentPadding: EdgeInsets.zero,
+                          onChanged: (bool value) => setState(() => preferVariety = value),
+                        ),
+                      ],
+                    ),
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
+
+              // ==========================================
+              // CLEAR BUTTON
+              // ==========================================
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: _clearForm,
                   child: const Text(
-                    "Clear Form",
+                    "Reset Form",
                     style: TextStyle(
                       color: Colors.grey,
                       fontWeight: FontWeight.bold,

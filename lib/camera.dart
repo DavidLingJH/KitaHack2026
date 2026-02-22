@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:kitahack_frontend/GlassButton.dart';
-import 'package:kitahack_frontend/homepage.dart';
+import 'package:kitahack_frontend/camera%20result.dart';
 
-class CameraCaptureScreen extends StatelessWidget {
+class CameraCaptureScreen extends StatefulWidget {
   const CameraCaptureScreen({super.key});
+
+  @override
+  State<CameraCaptureScreen> createState() => _CameraCaptureScreenState();
+}
+
+class _CameraCaptureScreenState extends State<CameraCaptureScreen> {
+  // 2. Added a state variable to track the current mode
+  bool isReceiptMode = true;
 
   @override
   Widget build(BuildContext context) {
@@ -49,54 +57,47 @@ class CameraCaptureScreen extends StatelessWidget {
             top: 100,
             left: 0,
             right: 0,
-            height: screenHeight*0.6,
+            height: screenHeight * 0.6,
             child: Center(
-              // The Stack shrinks to fit its non-positioned children (the Image)
               child: Stack(
                 children: [
-                  // 1. The Background
                   Positioned.fill(
                     child: Padding(
-                      padding: EdgeInsetsGeometry.directional(bottom: 80),
+                      padding: const EdgeInsets.only(bottom: 80),
                       child: Container(
                         color: Colors.grey[850], 
                       ),
                     )
                   ),
-                  
-                  // 2. The Image (The "Boss")
-                  // Since this is NOT wrapped in Positioned, the Stack takes its size from this widget.
                   Image.asset(
                     'assets/images/Frame3.png',
-                    fit: BoxFit.fitHeight, // Ensures the full frame is visible
+                    fit: BoxFit.fitHeight, 
                   ),
                 ],
               ),
             ),
           ),
           Positioned(
-            // Math: Start 100px down + height of frame (60%) + 20px gap
             top: 35 + (screenHeight * 0.6), 
             left: 120, 
             right: 120,
-            //ADD A COLUMN HERE
             child: Column(
               children: [
                 Center(
-                  child: GlassButton( // Replace with your actual widget class name
-                    text: "Receipt",
+                  child: GlassButton( 
+                    // 3. Dynamically change text based on state
+                    text: isReceiptMode ? "Receipt" : "Meal",
                     onPressed: () {
-                      // Handle tap
+                      // Optional: You can also toggle the state by pressing this top button
                     },
                   ),
                 ),
-                SizedBox(height: 60),
+                const SizedBox(height: 60),
                 GestureDetector(
                   onTap: () {
-                    // Navigate to the new page here
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()), // Replace NextPage with your actual screen
+                      MaterialPageRoute(builder: (context) => const Result()), 
                     );
                   },
                   child: Image.asset(
@@ -113,9 +114,15 @@ class CameraCaptureScreen extends StatelessWidget {
             left: 10,
             width: 120,
             child: GlassButton(
-              text: 'Capture a\nMeal', 
-              onPressed: () {  },
+              // 4. Dynamically change the toggle button text
+              text: isReceiptMode ? 'Capture a\nMeal' : 'Capture a\nReceipt', 
               color: Colors.black,
+              onPressed: () { 
+                // 5. Update the state and rebuild the UI
+                setState(() {
+                  isReceiptMode = !isReceiptMode;
+                });
+              },
             )
           )
         ],
