@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:kitahack_frontend/GlassButton.dart';
 
 class Result extends StatefulWidget {
-  const Result({super.key});
+  // 1. Create the variable here
+  final String imagePath; 
+
+  // 2. Require it in the constructor
+  const Result({super.key, required this.imagePath}); 
 
   @override
   State<Result> createState() => _ResultState();

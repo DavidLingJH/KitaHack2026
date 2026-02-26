@@ -79,6 +79,10 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
 
   @override
   Widget build(BuildContext context) {
+    // A slightly wider standard label width to accommodate longer labels 
+    // like "Appliances Available" and "Max Prep Time (mins)"
+    const double standardLabelWidth = 150.0;
+
     return Scaffold(
       backgroundColor: const Color(0xffF9EECA),
       extendBodyBehindAppBar: true,
@@ -120,40 +124,37 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
               
               GlassTextField(
                 label: "Ingredients You Have",
+                labelWidth: standardLabelWidth,
                 controller: ingredients,
                 hint: "Chicken, Rice, Egg...",
               ),
               const SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    child: GlassDropdownField<String>(
-                      label: "Meal Type",
-                      labelWidth: 95, // Increased from 90 to prevent wrapping
-                      value: selectedMealType,
-                      items: const ["Breakfast", "Lunch", "Dinner", "Snack", "Dessert"],
-                      onChanged: (String? val) {
-                        setState(() => selectedMealType = val!);
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: GlassDropdownField<int>(
-                      label: "Servings",
-                      labelWidth: 95, // Increased from 80 to prevent the 's' from wrapping
-                      value: selectedServings,
-                      items: const [1, 2, 3, 4, 5, 6, 7, 8],
-                      onChanged: (int? val) {
-                        setState(() => selectedServings = val!);
-                      },
-                    ),
-                  ),
-                ],
+              
+              GlassDropdownField<String>(
+                label: "Meal Type",
+                labelWidth: standardLabelWidth, 
+                value: selectedMealType,
+                items: const ["Breakfast", "Lunch", "Dinner", "Snack", "Dessert"],
+                onChanged: (String? val) {
+                  setState(() => selectedMealType = val!);
+                },
               ),
               const SizedBox(height: 10),
+              
+              GlassDropdownField<int>(
+                label: "Servings",
+                labelWidth: standardLabelWidth, 
+                value: selectedServings,
+                items: const [1, 2, 3, 4, 5, 6, 7, 8],
+                onChanged: (int? val) {
+                  setState(() => selectedServings = val!);
+                },
+              ),
+              const SizedBox(height: 10),
+              
               GlassTextField(
                 label: "Max Prep Time (mins)",
+                labelWidth: standardLabelWidth,
                 controller: prepTime,
                 keyboardType: TextInputType.number,
               ),
@@ -207,26 +208,31 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
                       children: [
                         GlassTextField(
                           label: "Exclusions",
+                          labelWidth: standardLabelWidth,
                           controller: exclusions,
                           hint: "No Cilantro, No Peanuts...",
                         ),
                         const SizedBox(height: 10),
+                        
                         GlassTextField(
                           label: "Cuisine Vibe",
+                          labelWidth: standardLabelWidth,
                           controller: cuisine,
                           hint: "Spicy, Italian...",
                         ),
                         const SizedBox(height: 10),
+                        
                         GlassTextField(
                           label: "Appliances Available",
+                          labelWidth: standardLabelWidth,
                           controller: appliances,
                           hint: "Stove, Air Fryer...",
                         ),
                         const SizedBox(height: 10),
                         
-                        // Replaced Textfield with Dropdown for Dietary Needs
                         GlassDropdownField<String>(
                           label: "Dietary Needs",
+                          labelWidth: standardLabelWidth,
                           value: selectedDietary,
                           items: const ["None", "Vegetarian", "Vegan", "Keto", "Gluten-Free", "Paleo"],
                           onChanged: (String? val) {

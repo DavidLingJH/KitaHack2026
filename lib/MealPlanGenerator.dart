@@ -91,6 +91,9 @@ class _MealPlanGeneratorState extends State<MealPlanGenerator> {
 
   @override
   Widget build(BuildContext context) {
+    // A standard label width keeps all the input boxes perfectly aligned vertically
+    const double standardLabelWidth = 110.0;
+
     return Scaffold(
       backgroundColor: const Color(0xffF9EECA),
       extendBodyBehindAppBar: true,
@@ -131,66 +134,51 @@ class _MealPlanGeneratorState extends State<MealPlanGenerator> {
               const SizedBox(height: 15),
               
               GlassTextField(
-                label: "Base Ingredients", 
+                label: "Ingredients", 
+                labelWidth: standardLabelWidth,
                 controller: ingredients,
                 hint: "Chicken, Rice, Broccoli...",
               ),
               const SizedBox(height: 10),
               
-              // Split Row for Days and People
-              Row(
-                children: [
-                  Expanded(
-                    child: GlassDropdownField<int>(
-                      label: "Days",
-                      labelWidth: 70, 
-                      value: selectedDuration,
-                      items: const [1, 2, 3, 5, 7, 14, 30],
-                      onChanged: (int? val) => setState(() => selectedDuration = val!),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: GlassDropdownField<int>(
-                      label: "People",
-                      labelWidth: 80,
-                      value: selectedPeople,
-                      items: const [1, 2, 3, 4, 5, 6, 8, 10],
-                      onChanged: (int? val) => setState(() => selectedPeople = val!),
-                    ),
-                  ),
-                ],
+              GlassDropdownField<int>(
+                label: "Duration (Days)",
+                labelWidth: standardLabelWidth, 
+                value: selectedDuration,
+                items: const [1, 2, 3, 5, 7, 14, 30],
+                onChanged: (int? val) => setState(() => selectedDuration = val!),
+              ),
+              const SizedBox(height: 10),
+              
+              GlassDropdownField<int>(
+                label: "People",
+                labelWidth: standardLabelWidth,
+                value: selectedPeople,
+                items: const [1, 2, 3, 4, 5, 6, 8, 10],
+                onChanged: (int? val) => setState(() => selectedPeople = val!),
               ),
               const SizedBox(height: 10),
 
-              // Split Row for Budget and Cook Time
-              Row(
-                children: [
-                  Expanded(
-                    child: GlassTextField(
-                      label: "Budget",
-                      labelWidth: 80,
-                      controller: budget,
-                      hint: "e.g. 50",
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: GlassTextField(
-                      label: "Max Mins",
-                      labelWidth: 90,
-                      controller: cookTime,
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                ],
+              GlassTextField(
+                label: "Budget",
+                labelWidth: standardLabelWidth,
+                controller: budget,
+                hint: "e.g. 50",
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 10),
+              
+              GlassTextField(
+                label: "Max Time (Min)",
+                labelWidth: standardLabelWidth,
+                controller: cookTime,
+                keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 10),
 
               GlassDropdownField<String>(
                 label: "Diet",
-                labelWidth: 80,
+                labelWidth: standardLabelWidth,
                 value: selectedDietary,
                 items: const ["None", "Vegetarian", "Vegan", "Keto", "Paleo", "Gluten-Free"],
                 onChanged: (String? val) => setState(() => selectedDietary = val!),
@@ -244,57 +232,44 @@ class _MealPlanGeneratorState extends State<MealPlanGenerator> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         
-                        Row(
-                          children: [
-                            Expanded(
-                              child: GlassDropdownField<String>(
-                                label: "Goal",
-                                labelWidth: 70,
-                                value: selectedPurpose,
-                                items: const ["General Health", "Weight Loss", "Muscle Gain", "Maintenance"],
-                                onChanged: (String? val) => setState(() => selectedPurpose = val!),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: GlassDropdownField<String>(
-                                label: "Skill",
-                                labelWidth: 70,
-                                value: selectedSkill,
-                                items: const ["Beginner", "Intermediate", "Advanced"],
-                                onChanged: (String? val) => setState(() => selectedSkill = val!),
-                              ),
-                            ),
-                          ],
+                        GlassDropdownField<String>(
+                          label: "Goal",
+                          labelWidth: standardLabelWidth,
+                          value: selectedPurpose,
+                          items: const ["General Health", "Weight Loss", "Muscle Gain", "Maintenance"],
+                          onChanged: (String? val) => setState(() => selectedPurpose = val!),
+                        ),
+                        const SizedBox(height: 10),
+                        
+                        GlassDropdownField<String>(
+                          label: "Skill Level",
+                          labelWidth: standardLabelWidth,
+                          value: selectedSkill,
+                          items: const ["Beginner", "Intermediate", "Advanced"],
+                          onChanged: (String? val) => setState(() => selectedSkill = val!),
                         ),
                         const SizedBox(height: 10),
 
-                        Row(
-                          children: [
-                            Expanded(
-                              child: GlassDropdownField<String>(
-                                label: "Meals",
-                                labelWidth: 80,
-                                value: selectedMealType,
-                                items: const ["All Meals", "Lunch & Dinner", "Dinner Only", "Breakfast Only", "Lunch Only"],
-                                onChanged: (String? val) => setState(() => selectedMealType = val!),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: GlassTextField(
-                                label: "Style",
-                                labelWidth: 70,
-                                controller: style,
-                                hint: "e.g. Asian",
-                              ),
-                            ),
-                          ],
+                        GlassDropdownField<String>(
+                          label: "Meals Included",
+                          labelWidth: standardLabelWidth,
+                          value: selectedMealType,
+                          items: const ["All Meals", "Lunch & Dinner", "Dinner Only", "Breakfast Only", "Lunch Only"],
+                          onChanged: (String? val) => setState(() => selectedMealType = val!),
+                        ),
+                        const SizedBox(height: 10),
+                        
+                        GlassTextField(
+                          label: "Cuisine Style",
+                          labelWidth: standardLabelWidth,
+                          controller: style,
+                          hint: "e.g. Asian",
                         ),
                         const SizedBox(height: 10),
 
                         GlassTextField(
                           label: "Appliances",
+                          labelWidth: standardLabelWidth,
                           controller: appliances,
                           hint: "Oven, Air Fryer...",
                         ),
@@ -302,6 +277,7 @@ class _MealPlanGeneratorState extends State<MealPlanGenerator> {
                         
                         GlassTextField(
                           label: "Exclusions",
+                          labelWidth: standardLabelWidth,
                           controller: exclusions,
                           hint: "No Peanuts, No Seafood...",
                         ),
@@ -309,6 +285,7 @@ class _MealPlanGeneratorState extends State<MealPlanGenerator> {
 
                         GlassTextField(
                           label: "Health Info",
+                          labelWidth: standardLabelWidth,
                           controller: healthCon,
                           hint: "e.g. Diabetes, Hypertension...",
                         ),

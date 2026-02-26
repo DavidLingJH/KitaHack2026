@@ -20,7 +20,7 @@ class GlassButton extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          height: 55,
+          height: 50,
           decoration: BoxDecoration(
             // Use the passed 'color' variable here
             gradient: LinearGradient(

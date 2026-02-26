@@ -81,12 +81,6 @@ class Chatbot extends StatelessWidget {
                           );
                         },
                       ),
-                      const SizedBox(height: 10), 
-                      GlassButton(
-                        text: "Generate Shopping List",
-                        onPressed: () {},
-                      ),
-                      const SizedBox(height: 10), 
                     ],
                   ),
                 )
