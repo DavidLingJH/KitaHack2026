@@ -1,11 +1,9 @@
-import 'dart:ui'; // Required for the glass effect
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:kitahack_frontend/camera.dart';
 import 'package:kitahack_frontend/chatbot.dart';
-
-// Import your actual pages here
-// import 'chatbot.dart'; 
-// import 'camera_screen.dart';
+import 'package:kitahack_frontend/cameratest.dart'; // 1. Added the import
+import 'package:kitahack_frontend/main.dart'; // Add this at the top!
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -13,15 +11,14 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Using a gradient background to make the glass effect pop
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xffF9EECA), // Your cream color
-              Color(0xffFFD700), // A slightly darker gold/orange for contrast
+              Color(0xffF9EECA),
+              Color(0xffFFD700),
             ],
           ),
         ),
@@ -31,7 +28,6 @@ class HomePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 1. The Header
                 const SizedBox(height: 20),
                 const Text(
                   "Hello, Chef!",
@@ -51,10 +47,9 @@ class HomePage extends StatelessWidget {
                 
                 const SizedBox(height: 50),
 
-                // 2. The Two Main Functions
                 Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  // Changed to a ListView in case the screen gets too small for 3 buttons
+                  child: ListView( 
                     children: [
                       // OPTION A: AI Chatbot / Recipe Generator
                       MenuCard(
@@ -84,8 +79,27 @@ class HomePage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              // REPLACE 'PlaceholderScreen' with your Camera Widget
                               builder: (context) => const CameraCaptureScreen(),
+                            ),
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      // OPTION C: Camera Test (New Button)
+                      MenuCard(
+                        title: "Camera Test",
+                        subtitle: "Debug hardware integration",
+                        icon: Icons.bug_report_outlined, // A fitting icon for testing
+                        color: Colors.blueAccent,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              // NOTE: I removed the word 'const' from before CameraPage. 
+                              // This is required because 'globalCameras' is loaded at runtime, not compile-time!
+                              builder: (context) => CameraPage(cameras: globalCameras), 
                             ),
                           );
                         },
@@ -101,6 +115,8 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
+// ... MenuCard widget code stays exactly the same as you had it ...
 
 class MenuCard extends StatelessWidget {
   final String title;
