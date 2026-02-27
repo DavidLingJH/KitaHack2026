@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kitahack_frontend/GlassButton.dart';
 import 'package:kitahack_frontend/GlassDropdownField.dart';
 import 'package:kitahack_frontend/InputTextField.dart';
+import 'package:kitahack_frontend/RecipeResult.dart';
 // Make sure to import your new dropdown widget!
-import 'package:kitahack_frontend/GlassDropdownField.dart'; 
 
 class RecipeGenerator extends StatefulWidget {
   const RecipeGenerator({super.key});
@@ -43,6 +43,7 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
   }
 
   void _generateRecipe() {
+    // 1. You can keep your print statements for debugging if you want
     print("--- NEW SINGLE RECIPE REQUEST ---");
     print("Ingredients: ${ingredients.text}");
     print("Type: $selectedMealType");
@@ -53,8 +54,12 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
     print("Halal: $isHalal");
     print("Healthy: $isHealthy");
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Creating a recipe for you...")),
+    // 2. Navigate to the RecipeResult screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const RecipeResult(),
+      ),
     );
   }
 
