@@ -1,9 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:kitahack_frontend/ShoppingList.dart';
 import 'package:kitahack_frontend/camera.dart';
 import 'package:kitahack_frontend/chatbot.dart';
-import 'package:kitahack_frontend/cameratest.dart'; // 1. Added the import
-import 'package:kitahack_frontend/main.dart'; // Add this at the top!
+import 'package:kitahack_frontend/ShoppingList.dart'; 
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -48,7 +48,6 @@ class HomePage extends StatelessWidget {
                 const SizedBox(height: 50),
 
                 Expanded(
-                  // Changed to a ListView in case the screen gets too small for 3 buttons
                   child: ListView( 
                     children: [
                       // OPTION A: AI Chatbot / Recipe Generator
@@ -87,19 +86,18 @@ class HomePage extends StatelessWidget {
 
                       const SizedBox(height: 30),
 
-                      // OPTION C: Camera Test (New Button)
+                      // OPTION C: Shopping List (Replaced Camera Test)
                       MenuCard(
-                        title: "Camera Test",
-                        subtitle: "Debug hardware integration",
-                        icon: Icons.bug_report_outlined, // A fitting icon for testing
-                        color: Colors.blueAccent,
+                        title: "Shopping List",
+                        subtitle: "Check off your ingredients",
+                        icon: Icons.shopping_basket_outlined, // A nice grocery icon
+                        color: Colors.redAccent, // Red to contrast with orange and green
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              // NOTE: I removed the word 'const' from before CameraPage. 
-                              // This is required because 'globalCameras' is loaded at runtime, not compile-time!
-                              builder: (context) => CameraPage(cameras: globalCameras), 
+                              // Routes to the new screen you just created!
+                              builder: (context) => const ShoppingListScreen(), 
                             ),
                           );
                         },
@@ -116,8 +114,9 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// ... MenuCard widget code stays exactly the same as you had it ...
-
+// ==========================================
+// MENU CARD COMPONENT
+// ==========================================
 class MenuCard extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -141,10 +140,10 @@ class MenuCard extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          height: 160, // Fixed height for consistency
+          height: 160, 
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.3), // Glassy white base
+            color: Colors.white.withValues(alpha: 0.3), 
             borderRadius: BorderRadius.circular(30),
             border: Border.all(
               color: Colors.white.withValues(alpha: 0.6),
@@ -152,7 +151,7 @@ class MenuCard extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: color.withValues(alpha: 0.2), // Shadow matches the icon color
+                color: color.withValues(alpha: 0.2), 
                 blurRadius: 15,
                 offset: const Offset(0, 8),
               ),
@@ -167,7 +166,6 @@ class MenuCard extends StatelessWidget {
                 padding: const EdgeInsets.all(25.0),
                 child: Row(
                   children: [
-                    // The Icon Circle
                     Container(
                       height: 70,
                       width: 70,
@@ -180,7 +178,6 @@ class MenuCard extends StatelessWidget {
                     
                     const SizedBox(width: 20),
                     
-                    // The Text Info
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -206,7 +203,6 @@ class MenuCard extends StatelessWidget {
                       ),
                     ),
                     
-                    // Little arrow to indicate clickable
                     Icon(
                       Icons.arrow_forward_ios_rounded, 
                       color: Colors.black.withValues(alpha: 0.3),

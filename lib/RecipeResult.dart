@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kitahack_frontend/GlassButton.dart';
+import 'package:kitahack_frontend/globals.dart';
 
 class RecipeResult extends StatelessWidget {
   const RecipeResult({super.key});
@@ -66,19 +67,35 @@ class RecipeResult extends StatelessWidget {
         centerTitle: true,
         leading: const BackButton(color: Colors.black),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: Container(
         width: 160,
         margin: const EdgeInsets.only(bottom: 10, left: 10),
         child: GlassButton(
           text: "Save Recipes",
-          onPressed: () {
-            // TODO: Handle saving recipes to user's profile
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Recipes saved to your profile!")),
-            );
-          },
           color: Colors.orangeAccent, 
+          onPressed: () {
+            // 1. EXTRACT AND SAVE INGREDIENTS
+            for (var recipe in draftRecipes) {
+              for (String ingredient in recipe["ingredients"]) {
+                bool exists = globalShoppingList.any((item) => item["name"] == ingredient);
+                if (!exists) {
+                  globalShoppingList.add({
+                    "name": ingredient,
+                    "isChecked": false, 
+                  });
+                }
+              }
+            }
+
+            // 2. SHOW CONFIRMATION
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Ingredients added to Shopping List!")),
+            );
+
+            // 3. NAVIGATE BACK TO HOME SCREEN
+            // This safely removes all screens on top of the first screen (your Home Page)
+            Navigator.popUntil(context, (route) => route.isFirst);
+          },
         ),
       ),
       // 2. THE LIST OF RECIPES
