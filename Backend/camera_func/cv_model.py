@@ -4,16 +4,19 @@ from google.cloud import vision
 from google import genai
 import PIL
 import io
+from dotenv import load_dotenv
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 import schema
 
-os.environ["GEMINI_API_KEY"] = "AIzaSyC0DrPoAMbeIIBkC5ltOCZiKIPe0_Jgs8c"
+load_dotenv('D:\\KitaHack 2026\\Backend\\GEMINI_API.env')
+# os.environ["GEMINI_API_KEY"] = "AIzaSyC0DrPoAMbeIIBkC5ltOCZiKIPe0_Jgs8c"
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"Backend\camera_func\vision.json"
 
+
 VISION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-GEMINI_KEY = os.getenv('GEMINI_API_KEY')
+GEMINI_KEY = os.getenv('KEY')
 
 
 print(f"Python Executable: {sys.executable}")
