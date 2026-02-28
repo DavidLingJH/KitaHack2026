@@ -8,37 +8,46 @@ import 'package:http/http.dart' as http;
 class Result extends StatefulWidget {
   final String imagePath; 
   final bool isRecipemode;
+  final List<dynamic> scannedItems;
 
-  const Result({super.key, required this.imagePath, required this.isRecipemode}); 
+  const Result({super.key, required this.imagePath, required this.isRecipemode, required this.scannedItems}); 
 
   @override
-  State<Result> createState() => _ResultState();
+  State<Result> createState() => _ResultState(scannedItems: this.scannedItems);
 }
 
 class _ResultState extends State<Result> {
   // 1. Define your array of information here
-  final List<Map<String, dynamic>> scannedItems = [
-    {
-      "title": "Milk",
-      "subtitle": "Amount: 2 litres",
-      "imagePath": "assets/images/Milk.png",
-    },
-    {
-      "title": "Chicken",
-      "subtitle": "Amount: 2kg",
-      "imagePath": "assets/images/Chicken.png", 
-    },
-    {
-      "title": "Eggs",
-      "subtitle": "Amount: 30 pieces",
-      "imagePath": "assets/images/Eggs.png", 
-    },
-    {
-      "title": "Cabbage",
-      "subtitle": "Amount: 1kg",
-      "imagePath": "assets/images/Cabbage.png", 
-    },
-  ];
+  // final List<Map<String, dynamic>> scannedItems = [
+  //   {
+  //     "title": "Milk",
+  //     "subtitle": "Amount: 2 litres",
+  //     "imagePath": "assets/images/Milk.png",
+  //   },
+  //   {
+  //     "title": "Chicken",
+  //     "subtitle": "Amount: 2kg",
+  //     "imagePath": "assets/images/Chicken.png", 
+  //   },
+  //   {
+  //     "title": "Eggs",
+  //     "subtitle": "Amount: 30 pieces",
+  //     "imagePath": "assets/images/Eggs.png", 
+  //   },
+  //   {
+  //     "title": "Cabbage",
+  //     "subtitle": "Amount: 1kg",
+  //     "imagePath": "assets/images/Cabbage.png", 
+  //   },
+  // ];
+
+  final List<dynamic> scannedItems;
+
+  // 2. The constructor must match the class name 
+  // 3. Use 'this' to assign the parameter to the field
+  _ResultState({
+    required this.scannedItems,
+  });
 
   // Helper method to keep our UI code clean if an image fails to load
   Widget _buildFallbackError() {
@@ -190,12 +199,16 @@ class _ResultState extends State<Result> {
                       // 👇 RENDER THE SCANNED ITEMS FOR THE REST OF THE LIST 👇
                       // Subtract 2 from the index to map to the correct item in the scannedItems array
                       final item = scannedItems[index - 2]; 
+                      print('new');
+                      print(item['name']);
+                      print(item['price']);
                       return ResultWidget(
-                        title: item["title"],
-                        subtitle: item["subtitle"],
-                        imagePath: item["imagePath"],
+                        title: item["name"],
+                        subtitle: item["quantity"].toString(),
+                        price: item['price'],
+                        // imagePath: item["imagePath"],
                         onEditPressed: () {
-                          print("Edit pressed for ${item["title"]}");
+                          print("Edit pressed for");
                         },
                       );
                     },
@@ -250,14 +263,16 @@ class _ResultState extends State<Result> {
 class ResultWidget extends StatelessWidget {
   final String title;
   final String subtitle;
-  final String imagePath;
+  // final String imagePath;
+  final double price;
   final VoidCallback onEditPressed;
 
   const ResultWidget({
     super.key,
     required this.title,
     required this.subtitle,
-    required this.imagePath,
+    //required this.imagePath,
+    required this.price,
     required this.onEditPressed,
   });
 
@@ -281,17 +296,6 @@ class ResultWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
         child: Row(
           children: [
-            Image.asset(
-              imagePath,
-              width: 50,
-              height: 60,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) => const SizedBox(
-                width: 50, 
-                height: 60, 
-                child: Icon(Icons.broken_image, color: Colors.grey)
-              ),
-            ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -305,7 +309,13 @@ class ResultWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    subtitle,
+                    "Quantity: ${subtitle}",
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    'MYR ${price.toString()}',
                     style: const TextStyle(
                       fontSize: 16,
                     ),

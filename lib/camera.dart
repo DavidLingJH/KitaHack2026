@@ -4,6 +4,9 @@ import 'package:kitahack_frontend/GlassButton.dart';
 import 'package:kitahack_frontend/camera%20result.dart';
 import 'package:kitahack_frontend/main.dart'; // IMPORTANT: Gives access to globalCameras
 import 'package:http/http.dart' as http; 
+import 'package:image_picker/image_picker.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 
 class CameraCaptureScreen extends StatefulWidget {
   const CameraCaptureScreen({super.key});
@@ -54,45 +57,98 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> {
     super.dispose();
   }
 
-    Future<void> extractReceipt(path) async {
-        try {
-                  var request = http.MultipartRequest(
-                    'POST', 
-                    Uri.parse('http://127.0.0.1:8000/extract-receipt'),
-                  );
+  //  Future<void> extractReceipt(Uint8List imageBytes) async {
+  //     try {
+  //       var request = http.MultipartRequest(
+  //         'POST',
+  //         Uri.parse('http://localhost:8000/extract-receipt'),
+  //       );
 
-  
-                  request.files.add(
-                    await http.MultipartFile.fromPath('image', path),
-                  );
+  //       request.files.add(
+  //         http.MultipartFile.fromBytes(
+  //           'image',
+  //           imageBytes,
+  //           filename: 'receipt.jpg',
+  //         ),
+  //       );
 
-                  var streamedResponse = await request.send();
-                  
-                  // Convert to a readable response to get the body
-                  var response = await http.Response.fromStream(streamedResponse);
-                  
-                  print('Status: ${streamedResponse.statusCode}');
-                  print('Body: ${response.body}');
-          
-        } catch (e) {
-                  print('Upload failed: $e');
-        }
-    }
+  //       var streamedResponse = await request.send();
+  //       var response = await http.Response.fromStream(streamedResponse);
 
-  Future<void> extractItem(path) async {
-    var request = http.MultipartRequest('POST', Uri.parse('http://127.0.0.1:8000/extract-item'));
+  //       print('Status: ${response.statusCode}');
+  //       print('Body: ${response.body}');
+  //     } catch (e) {
+  //       print('Upload failed: $e');
+  //     }
+  //   }
+
+  // Future<void> pickImage() async {
+  //     final picker = ImagePicker();
+
+  //     final pickedFile = await picker.pickImage(
+  //       source: ImageSource.camera,
+  //     );
+
+  //     if (pickedFile != null) {
+  //         Uint8List bytes = await pickedFile.readAsBytes();
+  //         extractReceipt(bytes); // call your upload function
+  //     } else {
+  //       print("No image selected");
+  //     }
+  // }
+
+  // Future<void> extractItem(path) async {
+  //   var request = http.MultipartRequest('POST', Uri.parse('http://127.0.0.1:8000/extract-item'));
     
-    // This is how you "pass" the file to the request
-    request.files.add(
-      await http.MultipartFile.fromPath(
-        'image', // This is the 'key' your backend expects
-        path, 
-      )
-    );
+  //   // This is how you "pass" the file to the request
+  //   request.files.add(
+  //     await http.MultipartFile.fromPath(
+  //       'image', // This is the 'key' your backend expects
+  //       path, 
+  //     )
+  //   );
 
-    var response = await request.send();
-    print(response);
-  }
+  //   var response = await request.send();
+  //   print(response);
+  // }
+
+  Future<String?> uploadImageWeb(XFile photoFile, bool isReceipt) async {
+      try {
+        // Convert XFile to bytes for web compatibility
+        Uint8List imageBytes = await photoFile.readAsBytes();
+        
+        String endpoint = isReceipt ? '/extract-receipt' : '/extract-item';
+        
+        // Note: Use your actual server URL. 
+        // 'localhost' works for web-to-local, but check CORS settings on your backend!
+        var request = http.MultipartRequest(
+          'POST',
+          Uri.parse('http://localhost:8000$endpoint'),
+        );
+
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'file',
+            imageBytes,
+            filename: 'upload.jpg',
+          ),
+        );
+
+        var streamedResponse = await request.send();
+        var response = await http.Response.fromStream(streamedResponse);
+
+        if (response.statusCode == 200) {
+          print(response.body); // Return the JSON data from your API
+          return(response.body);
+        } else {
+          debugPrint('Server Error: ${response.statusCode}');
+          return null;
+        }
+      } catch (e) {
+        debugPrint('Upload Error: $e');
+        return null;
+      }
+    }
 
   
 
@@ -192,19 +248,48 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> {
                     if (!isCameraReady || controller == null) return;
 
                     try {
+                      // 1. Capture the photo
                       final XFile photoFile = await controller!.takePicture();
+
+                      // 2. Show Loading Overlay
                       if (!mounted) return;
-
-                      extractReceipt(photoFile.path);
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Result(imagePath: photoFile.path, isRecipemode: isReceiptMode,), 
-                        ), 
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => const Center(
+                          child: CircularProgressIndicator(color: Colors.white),
+                        ),
                       );
+
+                      // 3. Upload to API
+                      String? apiResponse = await uploadImageWeb(photoFile, isReceiptMode);
+                      
+
+                      // 4. Close Loading Overlay
+                      if (!mounted) return;
+                      Navigator.pop(context); 
+
+                      if (apiResponse != null) {
+                        // 5. Navigate and pass the API data
+                        List<dynamic> parsedList = jsonDecode(apiResponse);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Result(
+                              imagePath: photoFile.path, // This is the Blob URL for the <img> tag
+                              scannedItems: parsedList,
+                              isRecipemode: isReceiptMode,
+                              // apiData: apiResponse, // Pass your parsed JSON here
+                            ), 
+                          ), 
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Failed to process image. Check CORS settings.")),
+                        );
+                      }
                     } catch (e) {
-                      debugPrint("Failed to take picture: $e");
+                      debugPrint("Capture failed: $e");
                     }
                   },
                   child: Container(
