@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:kitahack_frontend/GlassButton.dart';
 import 'package:kitahack_frontend/GlassDropdownField.dart';
 import 'package:kitahack_frontend/InputTextField.dart';
+import 'package:kitahack_frontend/RecipeResult.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class MealPlanGenerator extends StatefulWidget {
   const MealPlanGenerator({super.key});
@@ -33,6 +36,7 @@ class _MealPlanGeneratorState extends State<MealPlanGenerator> {
   // --- 4. TOGGLES ---
   bool isHalal = false;
   bool preferVariety = true; // Defaulted to true for meal plans
+  bool _isLoading = false;
 
   // --- 5. UI STATE ---
   bool _showAdvanced = false;
@@ -113,7 +117,8 @@ class _MealPlanGeneratorState extends State<MealPlanGenerator> {
         margin: const EdgeInsets.only(bottom: 10, left: 10),
         child: GlassButton(
           text: "Generate Plan",
-          onPressed: _generateRecipe,
+          isLoading: _isLoading,
+          onPressed: generateRecipe,
           color: Colors.lightGreen,
         ),
       ),
@@ -346,4 +351,77 @@ class _MealPlanGeneratorState extends State<MealPlanGenerator> {
       ),
     );
   }
+
+    Future<void> generateRecipe() async {
+
+    setState(() => _isLoading = true);
+
+    try{
+        if(style.text==''){
+          style.text = 'Any';
+        }
+
+        if(exclusions.text == ''){
+          exclusions.text = 'None';
+        }
+
+        if(appliances.text == ''){
+          appliances.text = 'No appliances specify. Suggest based on the common norm';
+        }
+
+        
+
+        final response = await http.post(
+          Uri.parse('http://127.0.0.1:8000/generate'),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: jsonEncode({
+            "meal_type": selectedMealType,
+            "diet_res":selectedDietary,
+            "halal":isHalal,
+            "duration":selectedDuration,
+            "duration_unit":'day',
+            "meal_purpose":selectedPurpose,
+            "num_people":selectedPeople, 
+            "budget":double.tryParse(budget.text) ?? 0.0,
+            "currency":"MYR",
+            "skill_level":selectedSkill,
+            "cook_time":double.tryParse(cookTime.text) ?? 0.0,
+            "cook_time_unit":'minute',
+            'style':style.text,
+            'variety':preferVariety, 
+            'health_con':healthCon.text,
+            'ingredients':ingredients.text,
+            'appliances':appliances.text,
+          }),
+        );
+
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          print(data);
+          
+          if (!mounted) return;
+          Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RecipeResult(recipe: data),
+          ),
+      );
+        } else {
+          // print('Failed to send data');
+        }
+    }catch (e){
+      print('Failed to send data');
+    } finally{
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+    
+  }
+
 }
+
+

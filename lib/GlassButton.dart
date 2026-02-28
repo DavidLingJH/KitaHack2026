@@ -5,12 +5,14 @@ class GlassButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
   final Color color; // New Property
+  final bool isLoading;
 
   const GlassButton({
     super.key,
     required this.text,
     required this.onPressed,
     this.color = Colors.white, // Default to White if not specified
+    this.isLoading = false
   });
 
   @override
@@ -47,10 +49,14 @@ class GlassButton extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: onPressed,
+              onTap: isLoading ? null:onPressed,
               splashColor: color.withValues(alpha: 0.3), // Matches splash to button color
               child: Center(
-                child: Text(
+                child: isLoading
+                ? const SizedBox(height: 20,width:20, 
+                child: CircularProgressIndicator(color: Colors.black,strokeWidth: 2,),
+                )
+                :Text(
                   text,
                   textAlign: TextAlign.center,
                   style: TextStyle(

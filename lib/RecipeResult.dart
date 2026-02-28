@@ -3,54 +3,60 @@ import 'package:kitahack_frontend/GlassButton.dart';
 import 'package:kitahack_frontend/globals.dart';
 
 class RecipeResult extends StatelessWidget {
-  const RecipeResult({super.key});
 
+  final dynamic recipe;
+
+  const RecipeResult(
+    {super.key,
+    required this.recipe}
+  );
+  
   // 1. THE DRAFT ARRAY (Dummy Data)
   // Later, you can pass this in through the constructor from your backend!
-  final List<Map<String, dynamic>> draftRecipes = const [
-    {
-      "title": "Creamy Garlic Butter Chicken",
-      "description": "A rich and savory chicken dish perfect for a quick dinner.",
-      "time": "30 mins",
-      "difficulty": "Beginner",
-      "calories": "450 kcal",
-      "ingredients": [
-        "2 Chicken breasts",
-        "4 cloves Garlic, minced",
-        "1/2 cup Heavy cream",
-        "2 tbsp Butter",
-        "1 tsp Italian seasoning",
-      ],
-      "instructions": [
-        "Season the chicken breasts with salt, pepper, and Italian seasoning.",
-        "Melt butter in a skillet over medium-high heat and cook chicken until golden brown.",
-        "Remove chicken, lower heat, and sauté minced garlic until fragrant.",
-        "Stir in the heavy cream and let it simmer until slightly thickened.",
-        "Return the chicken to the skillet, coat with sauce, and serve hot."
-      ],
-    },
-    {
-      "title": "Spicy Basil Fried Rice",
-      "description": "A quick, spicy, and aromatic fried rice using leftover ingredients.",
-      "time": "15 mins",
-      "difficulty": "Beginner",
-      "calories": "380 kcal",
-      "ingredients": [
-        "2 cups Cooked rice (day-old is best)",
-        "1 cup Mixed vegetables",
-        "2 tbsp Soy sauce",
-        "1 tbsp Chili paste",
-        "Handful of fresh basil",
-      ],
-      "instructions": [
-        "Heat oil in a wok or large pan over high heat.",
-        "Add mixed vegetables and stir-fry for 2 minutes.",
-        "Add the cooked rice, breaking up any clumps.",
-        "Pour in soy sauce and chili paste, tossing everything together evenly.",
-        "Toss in fresh basil right before turning off the heat. Serve immediately."
-      ],
-    }
-  ];
+  // final List<Map<String, dynamic>> draftRecipes = const [
+  //   {
+  //     "title": "Creamy Garlic Butter Chicken",
+  //     "description": "A rich and savory chicken dish perfect for a quick dinner.",
+  //     "time": "30 mins",
+  //     "difficulty": "Beginner",
+  //     "calories": "450 kcal",
+  //     "ingredients": [
+  //       "2 Chicken breasts",
+  //       "4 cloves Garlic, minced",
+  //       "1/2 cup Heavy cream",
+  //       "2 tbsp Butter",
+  //       "1 tsp Italian seasoning",
+  //     ],
+  //     "instructions": [
+  //       "Season the chicken breasts with salt, pepper, and Italian seasoning.",
+  //       "Melt butter in a skillet over medium-high heat and cook chicken until golden brown.",
+  //       "Remove chicken, lower heat, and sauté minced garlic until fragrant.",
+  //       "Stir in the heavy cream and let it simmer until slightly thickened.",
+  //       "Return the chicken to the skillet, coat with sauce, and serve hot."
+  //     ],
+  //   },
+  //   {
+  //     "title": "Spicy Basil Fried Rice",
+  //     "description": "A quick, spicy, and aromatic fried rice using leftover ingredients.",
+  //     "time": "15 mins",
+  //     "difficulty": "Beginner",
+  //     "calories": "380 kcal",
+  //     "ingredients": [
+  //       "2 cups Cooked rice (day-old is best)",
+  //       "1 cup Mixed vegetables",
+  //       "2 tbsp Soy sauce",
+  //       "1 tbsp Chili paste",
+  //       "Handful of fresh basil",
+  //     ],
+  //     "instructions": [
+  //       "Heat oil in a wok or large pan over high heat.",
+  //       "Add mixed vegetables and stir-fry for 2 minutes.",
+  //       "Add the cooked rice, breaking up any clumps.",
+  //       "Pour in soy sauce and chili paste, tossing everything together evenly.",
+  //       "Toss in fresh basil right before turning off the heat. Serve immediately."
+  //     ],
+  //   }
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +81,12 @@ class RecipeResult extends StatelessWidget {
           color: Colors.orangeAccent, 
           onPressed: () {
             // 1. EXTRACT AND SAVE INGREDIENTS
-            for (var recipe in draftRecipes) {
-              for (String ingredient in recipe["ingredients"]) {
+            for (var rec in recipe) {
+
+              var ingredients = rec['recipe']['Ingredients'];
+              
+
+              for (String ingredient in ingredients) {
                 bool exists = globalShoppingList.any((item) => item["name"] == ingredient);
                 if (!exists) {
                   globalShoppingList.add({
@@ -103,17 +113,18 @@ class RecipeResult extends StatelessWidget {
         child: ListView.builder(
           // Padding at the bottom so the last item doesn't hide behind the FloatingActionButton
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 100),
-          itemCount: draftRecipes.length,
+          itemCount: recipe.length,
           itemBuilder: (context, index) {
-            final recipe = draftRecipes[index];
+            final tempRecipe = recipe[index];
+            //print(tempRecipe);
             return RecipeMiniCard(
-              recipe: recipe,
+              recipe: tempRecipe,
               onTap: () {
                 // Navigate to the detail screen when tapped
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => RecipeDetailScreen(recipe: recipe),
+                    builder: (context) => RecipeDetailScreen(recipe: tempRecipe),
                   ),
                 );
               },
@@ -129,7 +140,7 @@ class RecipeResult extends StatelessWidget {
 // THE SMALL WIDGET (Mini Card)
 // ==========================================
 class RecipeMiniCard extends StatelessWidget {
-  final Map<String, dynamic> recipe;
+  final dynamic recipe;
   final VoidCallback onTap;
 
   const RecipeMiniCard({
@@ -165,7 +176,7 @@ class RecipeMiniCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  recipe["title"],
+                  recipe['recipe']['Meal_name'],
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -174,7 +185,7 @@ class RecipeMiniCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  recipe["description"],
+                  recipe['recipe']['description'],
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black.withValues(alpha: 0.6),
@@ -187,11 +198,11 @@ class RecipeMiniCard extends StatelessWidget {
                   children: [
                     const Icon(Icons.timer_outlined, size: 16, color: Colors.orange),
                     const SizedBox(width: 4),
-                    Text(recipe["time"], style: const TextStyle(fontWeight: FontWeight.w500)),
+                    Text('${recipe['recipe']["time_required"]} min', style: const TextStyle(fontWeight: FontWeight.w500)),
                     const SizedBox(width: 16),
                     const Icon(Icons.restaurant_menu, size: 16, color: Colors.green),
                     const SizedBox(width: 4),
-                    Text(recipe["difficulty"], style: const TextStyle(fontWeight: FontWeight.w500)),
+                    Text(recipe['recipe']["difficulty"], style: const TextStyle(fontWeight: FontWeight.w500)),
                   ],
                 ),
               ],
@@ -207,14 +218,31 @@ class RecipeMiniCard extends StatelessWidget {
 // THE FULL DETAILS PAGE
 // ==========================================
 class RecipeDetailScreen extends StatelessWidget {
-  final Map<String, dynamic> recipe;
+  final dynamic recipe;
+  
 
   const RecipeDetailScreen({super.key, required this.recipe});
 
+
   @override
   Widget build(BuildContext context) {
-    final List<String> ingredients = recipe["ingredients"];
-    final List<String> instructions = recipe["instructions"];
+    print('This is the thing');
+    print(recipe['recipe']["Ingredients"]);
+    final List<String> ingredients = List<String>.from(recipe['recipe']["Ingredients"]);
+    final List<String> instructions = List<String>.from(recipe['recipe']["Steps"]);
+
+    print(instructions);
+
+    var color;
+    if (recipe['recipe']['difficulty'] == 'Beginner'){
+      color = Colors.green;
+    }else if (recipe['recipe']['difficulty'] == 'Intermediate'){
+      color = Colors.orange;
+    }
+    else if (recipe['recipe']['difficulty']=='Advanced'){
+      color = Colors.redAccent;
+    }
+
 
     return Scaffold(
       backgroundColor: const Color(0xffF9EECA),
@@ -230,16 +258,16 @@ class RecipeDetailScreen extends StatelessWidget {
           children: [
             // Title and Quick Stats
             Text(
-              recipe["title"],
+              recipe['recipe']["Meal_name"],
               style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
             ),
             const SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _StatBadge(icon: Icons.timer, text: recipe["time"], color: Colors.orange),
-                _StatBadge(icon: Icons.local_fire_department, text: recipe["calories"], color: Colors.redAccent),
-                _StatBadge(icon: Icons.speed, text: recipe["difficulty"], color: Colors.green),
+                _StatBadge(icon: Icons.timer, text: '${recipe['recipe']["time_required"]} min', color: Colors.blue),
+                _StatBadge(icon: Icons.local_fire_department, text: '${recipe['recipe']["calories"].toString()} kcal', color: Colors.redAccent),
+                _StatBadge(icon: Icons.speed, text: recipe['recipe']["difficulty"], color: color),
               ],
             ),
             const SizedBox(height: 30),

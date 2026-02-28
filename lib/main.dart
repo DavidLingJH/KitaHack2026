@@ -12,7 +12,7 @@ Future<void> main() async {
   // 3. Fetch the list of available cameras with error handling
   try {
     globalCameras = await availableCameras();
-  } catch (e) {
+  } catch (e) {    
     globalCameras = []; // Fallback to an empty list so the app doesn't crash
     debugPrint('Camera initialization error: $e');
   }

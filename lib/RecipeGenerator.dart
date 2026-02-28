@@ -3,6 +3,9 @@ import 'package:kitahack_frontend/GlassButton.dart';
 import 'package:kitahack_frontend/GlassDropdownField.dart';
 import 'package:kitahack_frontend/InputTextField.dart';
 import 'package:kitahack_frontend/RecipeResult.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 // Make sure to import your new dropdown widget!
 
 class RecipeGenerator extends StatefulWidget {
@@ -16,12 +19,15 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
   // --- 1. CORE INPUTS (Text Fields) ---
   final TextEditingController ingredients = TextEditingController();
   final TextEditingController prepTime = TextEditingController(text: "30"); 
+  final TextEditingController budget = TextEditingController(text: "10"); 
   final TextEditingController exclusions = TextEditingController();
   final TextEditingController cuisine = TextEditingController(); 
   final TextEditingController appliances = TextEditingController(); 
+  // final TextEditingController foodstyle = TextEditingController();
 
   // --- 2. DROPDOWN STATES (Replaced Controllers) ---
   String selectedMealType = "Dinner";
+  String selectedSkillType = "Beginner";
   int selectedServings = 2;
   String selectedDietary = "None";
 
@@ -31,42 +37,50 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
 
   // --- 4. UI STATE ---
   bool _showAdvanced = false; // Controls the visibility of the advanced section
+  bool _isLoading = false;
 
   @override
   void dispose() {
     ingredients.dispose();
+    // foodstyle.dispose();
     exclusions.dispose();
     cuisine.dispose();
     prepTime.dispose();
+    budget.dispose();
     appliances.dispose();
     super.dispose();
   }
 
   void _generateRecipe() {
     // 1. You can keep your print statements for debugging if you want
-    print("--- NEW SINGLE RECIPE REQUEST ---");
-    print("Ingredients: ${ingredients.text}");
-    print("Type: $selectedMealType");
-    print("Servings: $selectedServings");
-    print("Time: ${prepTime.text}");
-    print("Appliance: ${appliances.text}");
-    print("Dietary: $selectedDietary");
-    print("Halal: $isHalal");
-    print("Healthy: $isHealthy");
+    // print("--- NEW SINGLE RECIPE REQUEST ---");
+    // print("Ingredients: ${ingredients.text}");
+    // print("Type: $selectedMealType");
+    // print("Servings: $selectedServings");
+    // print("Time: ${prepTime.text}");
+    // print("Appliance: ${appliances.text}");
+    // print("Dietary: $selectedDietary");
+    // print("Halal: $isHalal");
+    // print("Healthy: $isHealthy");
+
+
+
 
     // 2. Navigate to the RecipeResult screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const RecipeResult(),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => const RecipeResult(recipe:),
+    //   ),
+    // );
   }
 
   void _clearForm() {
     // Reset TextFields
     ingredients.clear();
+    // foodstyle.clear();
     prepTime.text = "30";
+    budget.text = "10";
     exclusions.clear();
     cuisine.clear();
     appliances.clear();
@@ -74,6 +88,7 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
     // Reset Dropdowns & Toggles
     setState(() {
       selectedMealType = "Dinner";
+      selectedSkillType = "Beginner";
       selectedServings = 2;
       selectedDietary = "None";
       isHalal = false;
@@ -107,7 +122,8 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
         margin: const EdgeInsets.only(bottom: 10, left: 10),
         child: GlassButton(
           text: "Cook Now",
-          onPressed: _generateRecipe,
+          isLoading: _isLoading,
+          onPressed: generateRecipe,
           color: Colors.orangeAccent, 
         ),
       ),
@@ -145,6 +161,14 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
                 },
               ),
               const SizedBox(height: 10),
+
+              // GlassTextField(
+              //   label: "Style",
+              //   labelWidth: standardLabelWidth,
+              //   controller: foodstyle,
+              //   hint: "Malay, Indian, Thai,...",
+              // ),
+              // const SizedBox(height: 10),
               
               GlassDropdownField<int>(
                 label: "Servings",
@@ -156,7 +180,7 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
                 },
               ),
               const SizedBox(height: 10),
-              
+    
               GlassTextField(
                 label: "Max Prep Time (mins)",
                 labelWidth: standardLabelWidth,
@@ -165,6 +189,26 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
               ),
 
               const SizedBox(height: 25),
+
+              GlassTextField(
+                label: "Budget (MYR)",
+                labelWidth: standardLabelWidth,
+                controller: budget,
+                keyboardType: TextInputType.number,
+              ),
+
+              const SizedBox(height: 25),
+
+               GlassDropdownField<String>(
+                label: "Skill Type",
+                labelWidth: standardLabelWidth, 
+                value: selectedSkillType,
+                items: const ["Beginner", "Intermediate", "Advanced"],
+                onChanged: (String? val) {
+                  setState(() => selectedSkillType = val!);
+                },
+              ),
+              const SizedBox(height: 10),
 
               // ==========================================
               // ADVANCED SETTINGS TOGGLE
@@ -293,5 +337,77 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
         ),
       ),
     );
+  }
+
+  
+
+   Future<void> generateRecipe() async {
+
+    setState(() => _isLoading = true);
+
+    try{
+              if(cuisine.text==''){
+          cuisine.text = 'Any';
+        }
+
+        if(exclusions.text == ''){
+          exclusions.text = 'None';
+        }
+
+        if(appliances.text == ''){
+          appliances.text = 'No appliances specify. Suggest based on the common norm';
+        }
+
+        
+
+        final response = await http.post(
+          Uri.parse('http://127.0.0.1:8000/generate'),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: jsonEncode({
+            "meal_type": selectedMealType,
+            "diet_res":selectedDietary,
+            "halal":isHalal,
+            "duration":1,
+            "duration_unit":'day',
+            "meal_purpose":'None. Just for common eating',
+            "num_people":selectedServings, 
+            "budget":double.tryParse(budget.text) ?? 0.0,
+            "currency":"MYR",
+            "skill_level":selectedSkillType,
+            "cook_time":double.tryParse(prepTime.text) ?? 0.0,
+            "cook_time_unit":'minute',
+            'style':cuisine.text,
+            'variety':true, 
+            'health_con':selectedDietary,
+            'ingredients':ingredients.text,
+            'appliances':appliances.text,
+          }),
+        );
+
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          print(data);
+          
+          if (!mounted) return;
+          Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RecipeResult(recipe: data),
+          ),
+      );
+        } else {
+          // print('Failed to send data');
+        }
+    }catch (e){
+      print('Failed to send data');
+    } finally{
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+    
   }
 }
