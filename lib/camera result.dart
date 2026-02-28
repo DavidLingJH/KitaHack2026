@@ -215,7 +215,13 @@ class _ResultState extends State<Result> {
                           text: "Confirm",
                           color: Colors.green, 
                           onPressed: () {
-                            // Handle confirmation
+                            // Optional: Show a quick success message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("Items confirmed!")),
+                            );
+                            // 👇 NAVIGATE BACK TO HOMEPAGE 👇
+                            // This clears the navigation stack until it reaches the first route
+                            Navigator.popUntil(context, (route) => route.isFirst);
                           },
                         ),
                       ),
