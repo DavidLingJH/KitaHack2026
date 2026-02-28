@@ -1,185 +1,102 @@
 import sys
 import os
+import io
+from pathlib import Path
+import PIL.Image
+
+# Google SDKs
 from google.cloud import vision
 from google import genai
 import PIL
 import io
-from dotenv import load_dotenv
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 import schema
 
-load_dotenv('D:\\KitaHack 2026\\Backend\\GEMINI_API.env')
-# os.environ["GEMINI_API_KEY"] = "AIzaSyC0DrPoAMbeIIBkC5ltOCZiKIPe0_Jgs8c"
+os.environ["GEMINI_API_KEY"] = "AIzaSyC0DrPoAMbeIIBkC5ltOCZiKIPe0_Jgs8c"
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"Backend\camera_func\vision.json"
 
-
 VISION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-GEMINI_KEY = os.getenv('KEY')
+GEMINI_KEY = os.getenv('GEMINI_API_KEY')
 
-
-print(f"Python Executable: {sys.executable}")
-print(f"GOOGLE_APPLICATION_CREDENTIALS: {os.getenv('GOOGLE_APPLICATION_CREDENTIALS')}")
-print(f"GEMINI_API_KEY set: {os.getenv('GEMINI_API_KEY') is not None}")
+# Debugging Prints
+print(f"[*] System: Running on {sys.platform}")
+print(f"[*] Auth: Looking for Vision JSON at: {VISION_JSON_PATH}")
+print(f"[*] Auth: File exists? {VISION_JSON_PATH.exists()}")
 
 client = genai.Client(api_key=GEMINI_KEY)
 
-# OCR method to extract info from receipt
+# --- OCR METHODS ---
+
 def run_vision_ocr(pil_image: PIL.Image.Image) -> str:
-    """Extract text from a PIL Image object."""
-    print("[*] Scanning Receipt from PIL Image...")
+    """Extract text from a PIL Image object using Google Cloud Vision."""
+    print("[*] Scanning Receipt via Google Cloud Vision...")
     
-    client = vision.ImageAnnotatorClient()
+    try:
+        vision_client = vision.ImageAnnotatorClient()
 
-    # 1. Convert PIL Image to Bytes for Google Vision
-    img_byte_arr = io.BytesIO()
-    # Use PNG or JPEG depending on your input
-    pil_image.save(img_byte_arr, format='PNG') 
-    content = img_byte_arr.getvalue()
+        # Convert PIL Image to Bytes
+        img_byte_arr = io.BytesIO()
+        pil_image.save(img_byte_arr, format='PNG') 
+        content = img_byte_arr.getvalue()
 
-    # 2. Prepare the Vision Image object
-    image = vision.Image(content=content)
-    
-    # 3. Perform OCR
-    response = client.document_text_detection(image=image)
-    
-    if response.error.message:
-        raise Exception(f"Vision API Error: {response.error.message}")
+        image = vision.Image(content=content)
+        response = vision_client.document_text_detection(image=image)
+        
+        if response.error.message:
+            raise Exception(f"Vision API Error: {response.error.message}")
 
-    text = response.full_text_annotation.text
-    print(f"[+] OCR Success. Extracted {len(text)} chars.")
-    return text
+        text = response.full_text_annotation.text
+        print(f"[+] OCR Success. Extracted {len(text)} characters.")
+        return text
+    except Exception as e:
+        print(f"[-] OCR Failed: {e}")
+        return ""
 
 def extract_items_from_ocr(ocr_text: str):
+    """Uses Gemini to parse raw OCR text into a structured list of food items."""
     if not ocr_text: return []
-    print("[*] Parsing with Gemini (Text)...")
-    # model = genai.GenerativeModel('gemini-2.5-flash')
+    print("[*] Parsing receipt text with Gemini...")
+
     prompt = f"""
-    Extract FOOD items from this receipt text.
-    Ignore non-food.
+    Extract FOOD items from this receipt text. 
+    Return the items as a JSON list matching the schema.
+    Ignore taxes, totals, or non-food items.
+    
     OCR TEXT:
     {ocr_text}
     """
     try:
-        resp = client.models.generate_content(model="gemini-2.5-flash", contents = prompt, 
-                                               config={
-                                                        'response_mime_type': 'application/json',
-                                                        'response_schema': list[schema.Receipt],
-                                                        }
+        resp = client.models.generate_content(
+            model="gemini-2.5-flash", 
+            contents=prompt, 
+            config={
+                'response_mime_type': 'application/json',
+                'response_schema': list[schema.Receipt],
+            }
         )
-        # data = extract_json_from_text(resp.text)
-        # items = data.get("items", []) if data else []
-        # print(f"[+] Extracted {len(items)} items.")
-        return(resp.parsed)
+        return resp.parsed
     except Exception as e:
-        print(f"[-] Error: {e}")
+        print(f"[-] Gemini Parsing Error: {e}")
         return []
-
 
 def gemini_vision_identify_count(image: PIL.Image.Image):
-    """Identifies and counts grocery items in a photo."""
-    print(f"[*] AI Eyes: Analyzing image...")
+    """Identifies and counts grocery items directly from a photo using Gemini Vision."""
+    print(f"[*] Analyzing image content with Gemini Vision...")
     
-    prompt = """
-    Identify all FOOD items in this photo.
-    Count them.
-    """
+    prompt = "Identify all FOOD items in this photo and count them."
+    
     try:
-        resp = client.models.generate_content(model="gemini-2.5-flash", contents = [image, prompt], 
-                                               config={
-                                                        'response_mime_type': 'application/json',
-                                                        'response_schema': list[schema.ImageExtract],
-                                                        }
-    )
-        
-        # data = extract_json_from_text(resp.text)
-        # items = data.get("items", []) if data else []
-        # print(f"[+] Vision found {len(items)} distinct item types.")
-        return(resp.parsed)
+        resp = client.models.generate_content(
+            model="gemini-2.5-flash", 
+            contents=[image, prompt], 
+            config={
+                'response_mime_type': 'application/json',
+                'response_schema': list[schema.ImageExtract],
+            }
+        )
+        return resp.parsed
     except Exception as e:
-        print(f"[-] Vision Error: {e}")
+        print(f"[-] Gemini Vision Error: {e}")
         return []
-
-
-
-# Test Case
-
-# # OCR method to extract info from receipt
-# def run_vision_ocr(image_path: str) -> str:
-#     """Extract text from receipt image."""
-#     print(f"[*] Scanning Receipt: {image_path}...")
-#     if not os.path.exists(image_path):
-#         print(f"Error: File {image_path} not found.")
-#         return ""
-        
-#     client = vision.ImageAnnotatorClient()
-#     with open(image_path, 'rb') as f:
-#         content = f.read()
-#     image = vision.Image(content=content)
-#     response = client.document_text_detection(image=image)
-    
-#     text = response.full_text_annotation.text
-#     print(f"[+] OCR Success. Extracted {len(text)} chars.")
-#     return text
-
-# def extract_items_from_ocr(ocr_text: str):
-#     if not ocr_text: return []
-#     print("[*] Parsing with Gemini (Text)...")
-#     # model = genai.GenerativeModel('gemini-2.5-flash')
-#     prompt = f"""
-#     Extract FOOD items from this receipt text.
-#     Ignore non-food.
-#     OCR TEXT:
-#     {ocr_text}
-#     """
-#     try:
-#         resp = client.models.generate_content(model="gemini-2.5-flash", contents = prompt, 
-#                                                config={
-#                                                         'response_mime_type': 'application/json',
-#                                                         'response_schema': list[schema.Receipt],
-#                                                         }
-#         )
-#         # data = extract_json_from_text(resp.text)
-#         # items = data.get("items", []) if data else []
-#         # print(f"[+] Extracted {len(items)} items.")
-#         return(resp.text)
-#     except Exception as e:
-#         print(f"[-] Error: {e}")
-#         return []
-
-
-# def gemini_vision_identify_count(image_path: str):
-#     """Identifies and counts grocery items in a photo."""
-#     print(f"[*] AI Eyes: Analyzing {image_path}...")
-#     if not os.path.exists(image_path):
-#         print("File not found.")
-#         return []
-    
-    
-#     img = PIL.Image.open(image_path)
-    
-#     prompt = """
-#     Identify all FOOD items in this photo.
-#     Count them.
-#     """
-#     try:
-#         resp = client.models.generate_content(model="gemini-2.5-flash", contents = [img, prompt], 
-#                                                config={
-#                                                         'response_mime_type': 'application/json',
-#                                                         'response_schema': list[schema.ImageExtract],
-#                                                         }
-#     )
-        
-#         # data = extract_json_from_text(resp.text)
-#         # items = data.get("items", []) if data else []
-#         # print(f"[+] Vision found {len(items)} distinct item types.")
-#         return(resp.text)
-#     except Exception as e:
-#         print(f"[-] Vision Error: {e}")
-#         return []
-
-
-# print(extract_items_from_ocr(run_vision_ocr('D:\\KitaHack 2026\\Backend\\camera_func\\test_3.png')))
-
-# print(gemini_vision_identify_count('D:\KitaHack 2026\Backend\camera_func\grocery.png'))
