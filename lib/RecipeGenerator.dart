@@ -188,7 +188,7 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
                 keyboardType: TextInputType.number,
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 10),
 
               GlassTextField(
                 label: "Budget (MYR) - Per Meal",
@@ -197,7 +197,7 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
                 keyboardType: TextInputType.number,
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 10),
 
                GlassDropdownField<String>(
                 label: "Skill Type",
