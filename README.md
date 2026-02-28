@@ -1,6 +1,8 @@
 # 🍎 PantryMind: Your AI-Powered Kitchen Command Center
 
-**PantryMind** is an intelligent pantry management ecosystem designed to eliminate food waste, optimize grocery spending, and take the guesswork out of meal prep. By leveraging AI to track inventory and analyze local pricing, PantryMind ensures you always have a plan—and the best deal—for your next meal. Check out our frontend prototype on Figma: https://www.figma.com/proto/iffKfNNLncXiIQHG669SFr/KitaHack-2026-Masterplan?node-id=1-2&p=f&t=Co80kdWYfv8ltvTM-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=1%3A2 
+**PantryMind** is an intelligent pantry management ecosystem designed to eliminate food waste, optimize grocery spending, and take the guesswork out of meal prep. By leveraging AI to track inventory and analyze local pricing, PantryMind ensures you always have a plan—and the best deal—for your next meal. 
+
+Check out our frontend prototype on Figma: [View PantryMind Prototype](https://www.figma.com/proto/iffKfNNLncXiIQHG669SFr/KitaHack-2026-Masterplan?node-id=1-2&p=f&t=Co80kdWYfv8ltvTM-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=1%3A2)
 ---
 
 ## 🚀 Key Features
