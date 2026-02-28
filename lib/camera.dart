@@ -28,7 +28,11 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> {
   Future<void> _initializeCamera() async {
     if (globalCameras.isNotEmpty) {
       // Using the first camera (usually the rear lens)
-      controller = CameraController(globalCameras[0], ResolutionPreset.max);
+      controller = CameraController(
+        globalCameras[0], 
+        ResolutionPreset.max,
+        enableAudio: false
+      );
       try {
         await controller!.initialize();
         if (mounted) {

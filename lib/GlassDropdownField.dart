@@ -80,7 +80,7 @@ class GlassDropdownField<T> extends StatelessWidget {
                 // --- DROPDOWN SECTION ---
                 Expanded(
                   child: DropdownButtonFormField<T>(
-                    value: value,
+                    initialValue: value,
                     isExpanded: true, // Prevents overflow if text is long
                     icon: Icon(
                       Icons.keyboard_arrow_down_rounded, 

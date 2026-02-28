@@ -1,12 +1,12 @@
+import 'package:flutter/foundation.dart'; 
+import 'dart:io'; 
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:kitahack_frontend/GlassButton.dart';
 
 class Result extends StatefulWidget {
-  // 1. Create the variable here
   final String imagePath; 
 
-  // 2. Require it in the constructor
   const Result({super.key, required this.imagePath}); 
 
   @override
@@ -24,19 +24,33 @@ class _ResultState extends State<Result> {
     {
       "title": "Chicken",
       "subtitle": "Amount: 2kg",
-      "imagePath": "assets/images/Chicken.png", // Replace with an actual asset if you have one
+      "imagePath": "assets/images/Chicken.png", 
     },
     {
       "title": "Eggs",
       "subtitle": "Amount: 30 pieces",
-      "imagePath": "assets/images/Eggs.png", // Replace with an actual asset if you have one
+      "imagePath": "assets/images/Eggs.png", 
     },
     {
       "title": "Cabbage",
       "subtitle": "Amount: 1kg",
-      "imagePath": "assets/images/Cabbage.png", // Replace with an actual asset if you have one
+      "imagePath": "assets/images/Cabbage.png", 
     },
   ];
+
+  // Helper method to keep our UI code clean if an image fails to load
+  Widget _buildFallbackError() {
+    return Container(
+      color: Colors.grey[300],
+      child: const Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.broken_image, color: Colors.grey, size: 50),
+          Text("Image not found"),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,19 +95,97 @@ class _ResultState extends State<Result> {
           SafeArea(
             child: Column(
               children: [
-                // 2. Use Expanded and ListView.builder to make the list scrollable
+                // 2. THE COMBINED SCROLLABLE AREA (Image + List)
                 Expanded(
                   child: ListView.builder(
                     padding: const EdgeInsets.only(top: 10, bottom: 20),
-                    itemCount: scannedItems.length,
+                    // We add 2 to the length: 1 for the image, 1 for the label
+                    itemCount: scannedItems.length + 2, 
                     itemBuilder: (context, index) {
-                      final item = scannedItems[index];
+                      
+                      // 👇 RENDER THE IMAGE PREVIEW AT INDEX 0 👇
+                      if (index == 0) {
+                        return Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 400), 
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                              child: AspectRatio(
+                                aspectRatio: 3 / 4, 
+                                child: Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.15), 
+                                        spreadRadius: 1, 
+                                        offset: const Offset(0, 0), 
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    child: kIsWeb 
+                                      ? Image.network(
+                                          widget.imagePath, 
+                                          fit: BoxFit.contain, 
+                                          errorBuilder: (context, error, stackTrace) => _buildFallbackError(),
+                                        )
+                                      : Image.file(
+                                          File(widget.imagePath), 
+                                          fit: BoxFit.contain, 
+                                          errorBuilder: (context, error, stackTrace) => _buildFallbackError(),
+                                        ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+
+                      // 👇 RENDER THE "ITEMS" LABEL AT INDEX 1 👇
+                      if (index == 1) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                          child: Align(
+                            alignment: Alignment.center, // Aligns the widget to the left
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                              decoration: BoxDecoration(
+                                color: Color(0xffFBF5CF), // Glassy white look
+                                borderRadius: BorderRadius.circular(15.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.15), 
+                                    spreadRadius: 2, 
+                                    blurRadius: 10, 
+                                    offset: const Offset(0, 0), 
+                                  ),
+                                ],
+                              ),
+                              child: const Text(
+                                "Items",
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+
+                      // 👇 RENDER THE SCANNED ITEMS FOR THE REST OF THE LIST 👇
+                      // Subtract 2 from the index to map to the correct item in the scannedItems array
+                      final item = scannedItems[index - 2]; 
                       return ResultWidget(
                         title: item["title"],
                         subtitle: item["subtitle"],
                         imagePath: item["imagePath"],
                         onEditPressed: () {
-                          // TODO: Handle edit for this specific item
                           print("Edit pressed for ${item["title"]}");
                         },
                       );
@@ -101,7 +193,7 @@ class _ResultState extends State<Result> {
                   ),
                 ),
                 
-                // 3. Add the Retake and Confirm buttons at the bottom
+                // 3. FIXED BUTTONS AT THE BOTTOM
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
                   child: Row(
@@ -111,9 +203,9 @@ class _ResultState extends State<Result> {
                         width: 130,
                         child: GlassButton(
                           text: "Retake",
-                          color: Colors.white, // White glass look
+                          color: Colors.white, 
                           onPressed: () {
-                            Navigator.pop(context); // Goes back to the camera screen
+                            Navigator.pop(context); 
                           },
                         ),
                       ),
@@ -121,9 +213,15 @@ class _ResultState extends State<Result> {
                         width: 130,
                         child: GlassButton(
                           text: "Confirm",
-                          color: Colors.green, // A nice green tint for confirming
+                          color: Colors.green, 
                           onPressed: () {
-                            // TODO: Handle confirmation
+                            // Optional: Show a quick success message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("Items confirmed!")),
+                            );
+                            // 👇 NAVIGATE BACK TO HOMEPAGE 👇
+                            // This clears the navigation stack until it reaches the first route
+                            Navigator.popUntil(context, (route) => route.isFirst);
                           },
                         ),
                       ),
@@ -157,7 +255,7 @@ class ResultWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Tweaked margin slightly for a better list look
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), 
       decoration: BoxDecoration(
         color: const Color(0xFFFAF8CD), 
         borderRadius: BorderRadius.circular(20.0),
@@ -174,7 +272,6 @@ class ResultWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
         child: Row(
           children: [
-            // Added errorBuilder just in case the dummy assets don't exist yet so your app doesn't crash visually
             Image.asset(
               imagePath,
               width: 50,
