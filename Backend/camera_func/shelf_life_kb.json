@@ -1,0 +1,136 @@
+{
+    "names": [
+        "milk",
+        "fresh milk",
+        "full cream milk",
+        "skim milk"
+    ],
+    "storage": "fridge",
+    "days": 7
+},
+{
+    "names": [
+        "eggs",
+        "fresh eggs",
+        "chicken eggs"
+    ],
+    "storage": "fridge",
+    "days": 21
+},
+{
+    "names": [
+        "yogurt",
+        "greek yogurt"
+    ],
+    "storage": "fridge",
+    "days": 14
+},
+{
+    "names": [
+        "chicken breast",
+        "fresh chicken"
+    ],
+    "storage": "fridge",
+    "days": 2
+},
+{
+    "names": [
+        "ground beef",
+        "minced meat"
+    ],
+    "storage": "fridge",
+    "days": 2
+},
+{
+    "names": [
+        "lettuce",
+        "salad greens"
+    ],
+    "storage": "fridge",
+    "days": 5
+},
+{
+    "names": [
+        "spinach"
+    ],
+    "storage": "fridge",
+    "days": 4
+},
+{
+    "names": [
+        "rice",
+        "white rice",
+        "brown rice"
+    ],
+    "storage": "pantry",
+    "days": 365
+},
+{
+    "names": [
+        "pasta",
+        "spaghetti",
+        "macaroni"
+    ],
+    "storage": "pantry",
+    "days": 365
+},
+{
+    "names": [
+        "canned tuna",
+        "tuna tin"
+    ],
+    "storage": "pantry",
+    "days": 365
+},
+{
+    "names": [
+        "bread",
+        "sandwich bread"
+    ],
+    "storage": "pantry",
+    "days": 5
+},
+{
+    "names": [
+        "bananas"
+    ],
+    "storage": "pantry",
+    "days": 4
+},
+{
+    "names": [
+        "apples"
+    ],
+    "storage": "fridge",
+    "days": 21
+},
+{
+    "names": [
+        "potatoes"
+    ],
+    "storage": "pantry",
+    "days": 14
+},
+{
+    "names": [
+        "onions"
+    ],
+    "storage": "pantry",
+    "days": 30
+},
+{
+    "names": [
+        "cheese",
+        "cheddar",
+        "mozzarella"
+    ],
+    "storage": "fridge",
+    "days": 14
+},
+{
+    "names": [
+        "butter"
+    ],
+    "storage": "fridge",
+    "days": 60
+}

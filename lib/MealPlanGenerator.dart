@@ -139,7 +139,7 @@ class _MealPlanGeneratorState extends State<MealPlanGenerator> {
               const SizedBox(height: 15),
               
               GlassTextField(
-                label: "Ingredients", 
+                label: "Preferred Ingredients", 
                 labelWidth: standardLabelWidth,
                 controller: ingredients,
                 hint: "Chicken, Rice, Broccoli...",

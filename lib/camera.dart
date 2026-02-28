@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kitahack_frontend/GlassButton.dart';
 import 'package:kitahack_frontend/camera%20result.dart';
 import 'package:kitahack_frontend/main.dart'; // IMPORTANT: Gives access to globalCameras
+import 'package:http/http.dart' as http; 
 
 class CameraCaptureScreen extends StatefulWidget {
   const CameraCaptureScreen({super.key});
@@ -52,6 +53,48 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> {
     controller?.dispose();
     super.dispose();
   }
+
+    Future<void> extractReceipt(path) async {
+        try {
+                  var request = http.MultipartRequest(
+                    'POST', 
+                    Uri.parse('http://127.0.0.1:8000/extract-receipt'),
+                  );
+
+  
+                  request.files.add(
+                    await http.MultipartFile.fromPath('image', path),
+                  );
+
+                  var streamedResponse = await request.send();
+                  
+                  // Convert to a readable response to get the body
+                  var response = await http.Response.fromStream(streamedResponse);
+                  
+                  print('Status: ${streamedResponse.statusCode}');
+                  print('Body: ${response.body}');
+          
+        } catch (e) {
+                  print('Upload failed: $e');
+        }
+    }
+
+  Future<void> extractItem(path) async {
+    var request = http.MultipartRequest('POST', Uri.parse('http://127.0.0.1:8000/extract-item'));
+    
+    // This is how you "pass" the file to the request
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'image', // This is the 'key' your backend expects
+        path, 
+      )
+    );
+
+    var response = await request.send();
+    print(response);
+  }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -152,10 +195,12 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> {
                       final XFile photoFile = await controller!.takePicture();
                       if (!mounted) return;
 
+                      extractReceipt(photoFile.path);
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Result(imagePath: photoFile.path), 
+                          builder: (context) => Result(imagePath: photoFile.path, isRecipemode: isReceiptMode,), 
                         ), 
                       );
                     } catch (e) {

@@ -1,0 +1,194 @@
+{
+  "inventory": [
+    {
+      "id": "bcb06740-c544-4ada-9e21-445fca848a62",
+      "canonical_name": "Eggs",
+      "raw_name": "Large Eggs",
+      "qty": 0,
+      "unit": null,
+      "category": null,
+      "purchase_date": "2026-02-13",
+      "storage": "fridge",
+      "expiry_date_est": "2026-03-06",
+      "source": "receipt",
+      "confidence": null
+    },
+    {
+      "id": "739b7ca1-a3e1-4b97-aa20-509c90e88b60",
+      "canonical_name": "Milk",
+      "raw_name": "Milk",
+      "qty": 0,
+      "unit": null,
+      "category": null,
+      "purchase_date": "2026-02-13",
+      "storage": "fridge",
+      "expiry_date_est": "2026-02-20",
+      "source": "receipt",
+      "confidence": null
+    },
+    {
+      "id": "39901b08-b5e8-468d-b901-54bc725e40d9",
+      "canonical_name": "Cottage Cheese",
+      "raw_name": "Cottage Cheese",
+      "qty": 1,
+      "unit": null,
+      "category": null,
+      "purchase_date": "2026-02-13",
+      "storage": "fridge",
+      "expiry_date_est": "2026-02-20",
+      "source": "receipt",
+      "confidence": null,
+      "days_left": 1
+    },
+    {
+      "id": "265d6efe-f9fb-40b0-badd-e0ddfc90ba73",
+      "canonical_name": "Yogurt",
+      "raw_name": "Natural Yogurt",
+      "qty": 1,
+      "unit": null,
+      "category": null,
+      "purchase_date": "2026-02-13",
+      "storage": "fridge",
+      "expiry_date_est": "2026-02-23",
+      "source": "receipt",
+      "confidence": null
+    },
+    {
+      "id": "50aa21c6-b0a4-467a-bec0-962a17f17ab4",
+      "canonical_name": "Cherry Tomatoes",
+      "raw_name": "Cherry Tomatoes 1lb",
+      "qty": 1,
+      "unit": null,
+      "category": null,
+      "purchase_date": "2026-02-13",
+      "storage": "fridge",
+      "expiry_date_est": "2026-02-18",
+      "source": "receipt",
+      "confidence": null,
+      "days_left": -1
+    },
+    {
+      "id": "b9f718f1-e5e8-4e69-bf2a-91641c741363",
+      "canonical_name": "Bananas",
+      "raw_name": "Bananas 1lb",
+      "qty": 1,
+      "unit": null,
+      "category": null,
+      "purchase_date": "2026-02-13",
+      "storage": "fridge",
+      "expiry_date_est": "2026-02-17",
+      "source": "receipt",
+      "confidence": null,
+      "days_left": -2
+    },
+    {
+      "id": "6b37c6e8-9433-41d3-9b8f-65d71b838984",
+      "canonical_name": "Aubergine",
+      "raw_name": "Aubergine",
+      "qty": 1,
+      "unit": null,
+      "category": null,
+      "purchase_date": "2026-02-13",
+      "storage": "fridge",
+      "expiry_date_est": "2026-02-18",
+      "source": "receipt",
+      "confidence": null,
+      "days_left": -1
+    },
+    {
+      "id": "a76ed4aa-49bf-487a-9a3d-247271c071d5",
+      "canonical_name": "Cheese Crackers",
+      "raw_name": "Cheese Crackers",
+      "qty": 1,
+      "unit": null,
+      "category": null,
+      "purchase_date": "2026-02-13",
+      "storage": "pantry",
+      "expiry_date_est": "2026-03-15",
+      "source": "receipt",
+      "confidence": null
+    },
+    {
+      "id": "8a37718e-545b-4a2d-9227-7607ec592f5a",
+      "canonical_name": "Chocolate Cookies",
+      "raw_name": "Chocolate Cookies",
+      "qty": 1,
+      "unit": null,
+      "category": null,
+      "purchase_date": "2026-02-13",
+      "storage": "pantry",
+      "expiry_date_est": "2026-03-30",
+      "source": "receipt",
+      "confidence": null
+    },
+    {
+      "id": "63137eaf-0790-466d-a436-d292f3755aa8",
+      "canonical_name": "Canned Tuna",
+      "raw_name": "Canned Tuna 12pk",
+      "qty": 1,
+      "unit": null,
+      "category": null,
+      "purchase_date": "2026-02-13",
+      "storage": "pantry",
+      "expiry_date_est": "2027-02-13",
+      "source": "receipt",
+      "confidence": null
+    },
+    {
+      "id": "87356405-99ac-43c4-a167-2a3215d04961",
+      "canonical_name": "Chicken Breast",
+      "raw_name": "Chicken Breast",
+      "qty": 1,
+      "unit": null,
+      "category": null,
+      "purchase_date": "2026-02-13",
+      "storage": "fridge",
+      "expiry_date_est": "2026-02-15",
+      "source": "receipt",
+      "confidence": null,
+      "days_left": 2
+    }
+  ],
+  "shopping_list": [
+    {
+      "item": "Eggs",
+      "priority": "medium",
+      "reason": "missing_staple"
+    },
+    {
+      "item": "Milk",
+      "priority": "medium",
+      "reason": "missing_staple"
+    },
+    {
+      "item": "Rice",
+      "priority": "medium",
+      "reason": "missing_staple"
+    },
+    {
+      "item": "Bread",
+      "priority": "medium",
+      "reason": "missing_staple"
+    },
+    {
+      "item": "Chicken Breast",
+      "priority": "high",
+      "reason": "expiring_soon"
+    },
+    {
+      "item": "Potatoes",
+      "priority": "medium",
+      "reason": "ai_suggested"
+    }
+  ],
+  "settings": {
+    "staples": [
+      "Eggs",
+      "Milk",
+      "Rice",
+      "Bread"
+    ],
+    "expiring_soon_days": 3
+  },
+  "shelf_life_cache": {}
+}

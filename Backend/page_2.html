@@ -1,0 +1,29 @@
+<html>
+<body>
+    <div id="output"></div>
+    <script src="https://js.puter.com/v2/"></script>
+    <script>
+        async function streamResponses() {
+            const outputDiv = document.getElementById('output');
+            
+            // Gemini 3 Flash with streaming
+            outputDiv.innerHTML += '<h2>Gemini 3 Flash Response:</h2>';
+            const flashResponse = await puter.ai.chat(
+                "Explain the process of photosynthesis in detail",
+                {
+                    model: 'gemini-3-flash-preview',
+                    stream: true
+                }
+            );
+            
+            for await (const part of flashResponse) {
+                if (part?.text) {
+                    outputDiv.innerHTML += part.text.replaceAll('\n', '<br>');
+                }
+            }            
+        }
+
+        streamResponses();
+    </script>
+</body>
+</html>

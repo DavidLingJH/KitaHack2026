@@ -144,7 +144,7 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
               const SizedBox(height: 15),
               
               GlassTextField(
-                label: "Ingredients You Have",
+                label: "Preferred Ingredients",
                 labelWidth: standardLabelWidth,
                 controller: ingredients,
                 hint: "Chicken, Rice, Egg...",
@@ -191,7 +191,7 @@ class _RecipeGeneratorState extends State<RecipeGenerator> {
               const SizedBox(height: 25),
 
               GlassTextField(
-                label: "Budget (MYR)",
+                label: "Budget (MYR) - Per Meal",
                 labelWidth: standardLabelWidth,
                 controller: budget,
                 keyboardType: TextInputType.number,

@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "pantry-ai-486214",
+  "private_key_id": "3ff1ca5f424f44300334a5b8e8b2fcb6a75927f3",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCw9ohTzkryFzNk\nHmzwEVT7wYqsn3UclTKF2kW4q/G4971GqzDnB3pvTsIBAc57hzS5DN3pmjmv5JxU\nKk+cXXn/D7ksLAKWIzxXmsSJd18gYOj7qZNW9Bty2xTh/o5xQDmEYc0xO+J0OYD5\nL4prVrWNGQ9+qeSzcKj+kknB+5/YDZAxpiY41RoLmsHzquBKlzMTxkfabdI/cUnF\nWs7Qgdpp+VuWDhUIVcAav8GDhL36EVPmKJkccXXULNJxZCpzPC9p6FAZ3JzkavDs\n540Jozn0l0TgdKipwT2YdFP9jDV000CMxal5z7VddQW05EGSmt8HEw4bKDp5LNHc\nCkrS6naZAgMBAAECggEAQXOVnaWVy6+wFs44DZzjeVAuycUajC1Up/RAyFp0R6z9\nqTclGbYG30dacwPnioHKCs2LAF1GC9v6xBh4JIXgWunGW+OVO1Gh/mbkXVG08eVW\nFsq0D7uusU79jM7ZgWK3Q1LnEVgsXD9uh/vA7w19jcfglsEgsQuwvaN+u0wlZUOU\n2j1wEBZmCIj7tjJ09xiKZhqs5rG0aKzx8Yi/TH5pnRIAZUj6Y816CC2Y2wH6Nyk7\nQshVCPyMzro9gRQc5BlBB8SdbtAX5iZo8jNO1+KrKYacmmdi1gHrIkIfNLYio+Ed\ngtwHrxNLZMuVgoUr23xCIQpuuDJ6Dt4XJwqBBC2qpwKBgQDplBCZvOpTYkRMTpDX\n8TVN12vx1iIVe07ZAs6hLmPe7ipPkGpGJLZxD4dUKB5k3GPaSBG0ZMX3a0x0eC9D\nvlhwTUYBP1D/quHkfrF664ce4fpaX2aKwqepCOqLhqME8Lg1H41WLdtlbzVk99zD\nZtimggCJmGREs31KEQO0VNinBwKBgQDB8zTmO8YK6ha24UiIPYboUXALbd1/aWTD\nlkMbR8+K6p3Ph4CsmrK3g6pETIlclXbTms8lt/8T8EQka/V8gWbibw17UUJTxheS\najoYGpOwyDCmqzyrGlHFJAQ3CvSKByhlLpCYlo3bjhagNDYZ3m2EpckE2vXphHqS\nGtHdiUXtXwKBgA81N7t6xFr3e/Dn8KBOsSTHUNznD0MMyz5v41o1NgVuxkx136V/\ngG1uEGaXUhtJCitNI/H12bnZP5oZtSIZA5MUROmR4Mk0rA5/fTi+mwaUugMmUPvZ\n3qav0O2Sr4yDy8qRqlchFzbMfdJ8HOCQEq0Mq9JJnMWoVhD7eJ1GJPEDAoGAYd4F\nfYAACRXibFn1rbnOT4B4l2vS7y4RiJhUOHneAm0tQMFRbseJEw0/Z8NvNOa+1Twy\n9weHkVoWKILJlw/9CJmdJfL1EyzMTDeKJQuUJwp9cjzKGlTnmiD4d4Xxq4y9F4GN\nuVGPN5DVXfW6rwcMIHk/nFGY8ULGTt91suJIBOUCgYEArzGLrZNoWMmBtIydPs78\nu4wRsjzomjA2hLIF2NdSEHyGjYLtz6MbvyFON9sSpThzd6mQK5QW9jBmSe+3kJpP\n/ZI6hGOev/sneZWWnVaAOCMYE7JB+HY0glD1otNYu0UaWqGjzCaDkC2hQTPf+gnC\ngeFWDvpXbggOzxiCsHKzV60=\n-----END PRIVATE KEY-----\n",
+  "client_email": "vision-ocr-sa@pantry-ai-486214.iam.gserviceaccount.com",
+  "client_id": "100479340704492623036",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/vision-ocr-sa%40pantry-ai-486214.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

@@ -3,11 +3,13 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:kitahack_frontend/GlassButton.dart';
+import 'package:http/http.dart' as http; 
 
 class Result extends StatefulWidget {
   final String imagePath; 
+  final bool isRecipemode;
 
-  const Result({super.key, required this.imagePath}); 
+  const Result({super.key, required this.imagePath, required this.isRecipemode}); 
 
   @override
   State<Result> createState() => _ResultState();
@@ -147,36 +149,43 @@ class _ResultState extends State<Result> {
 
                       // 👇 RENDER THE "ITEMS" LABEL AT INDEX 1 👇
                       if (index == 1) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-                          child: Align(
-                            alignment: Alignment.center, // Aligns the widget to the left
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                              decoration: BoxDecoration(
-                                color: Color(0xffFBF5CF), // Glassy white look
-                                borderRadius: BorderRadius.circular(15.0),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.15), 
-                                    spreadRadius: 2, 
-                                    blurRadius: 10, 
-                                    offset: const Offset(0, 0), 
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: InkWell( // 1. Added InkWell for tap functionality
+                                onTap: () {
+                                  print('Yes did it');
+                                  // Trigger your uploadImage() or other logic here
+                                },
+                                borderRadius: BorderRadius.circular(15.0), // Matches your container radius
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffFBF5CF),
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.15), 
+                                        spreadRadius: 2, 
+                                        blurRadius: 10, 
+                                        offset: const Offset(0, 0), 
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                              child: const Text(
-                                "Items",
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
+                                  child: const Text(
+                                    "Items",
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      }
+                          );
+                    }
 
                       // 👇 RENDER THE SCANNED ITEMS FOR THE REST OF THE LIST 👇
                       // Subtract 2 from the index to map to the correct item in the scannedItems array
