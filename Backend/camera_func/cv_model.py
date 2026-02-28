@@ -3,6 +3,7 @@ import os
 import io
 from pathlib import Path
 import PIL.Image
+from dotenv import load_dotenv
 
 # Google SDKs
 from google.cloud import vision
@@ -14,16 +15,11 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(parent_dir)
 import schema
 
-os.environ["GEMINI_API_KEY"] = "AIzaSyC0DrPoAMbeIIBkC5ltOCZiKIPe0_Jgs8c"
+load_dotenv('D:\\KitaHack 2026\\Backend\\GEMINI_API.env')
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"Backend\camera_func\vision.json"
 
 VISION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-GEMINI_KEY = os.getenv('GEMINI_API_KEY')
-
-# Debugging Prints
-print(f"[*] System: Running on {sys.platform}")
-print(f"[*] Auth: Looking for Vision JSON at: {VISION_JSON_PATH}")
-print(f"[*] Auth: File exists? {VISION_JSON_PATH.exists()}")
+GEMINI_KEY = os.getenv('KEY')
 
 client = genai.Client(api_key=GEMINI_KEY)
 
