@@ -62,11 +62,11 @@ The core of the "Mind" in PantryMind is the ability to turn a messy receipt into
 
 | Component | Technology |
 | :--- | :--- |
-| **Frontend** | React Native / Flutter (Mobile) |
-| **Backend** | Python (FastAPI / Flask) |
-| **AI/ML** | OpenAI GPT-4o (Recipes), Tesseract/AWS Textract (OCR) |
-| **Database** | PostgreSQL / MongoDB |
-| **DevOps** | Docker & GitHub Actions |
+| **Frontend** | Flutter, JavaScript |
+| **Backend** | Python (FastAPI) |
+| **AI/ML** | Gemini 3.1 Pro & Google OCR Model |
+| **Database** | PostgreSQL |
+| **DevOps** | GitHub Actions |
 
 ---
 
