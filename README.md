@@ -76,7 +76,7 @@ The core of the "Mind" in PantryMind is the ability to turn a messy receipt into
 ### Prerequisites
 * Python 3.9+
 * Node.js & npm (for frontend)
-* API Keys for: OpenAI, Google Cloud Vision (or similar)
+* API Keys for: Gemini, Google Cloud Vision 
 
 ### Installation
 1. **Clone the repository:**
