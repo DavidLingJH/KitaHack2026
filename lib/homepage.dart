@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:kitahack_frontend/ShoppingList.dart';
 import 'package:kitahack_frontend/camera.dart';
 import 'package:kitahack_frontend/chatbot.dart';
-import 'package:kitahack_frontend/ShoppingList.dart'; 
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
